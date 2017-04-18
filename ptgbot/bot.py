@@ -22,6 +22,7 @@ pass=PASSWORD
 server=irc.freenode.net
 port=6667
 channels=foo,bar
+db=/tmp/db.json
 """
 
 import argparse
@@ -32,6 +33,8 @@ import logging.config
 import os
 import time
 import ssl
+
+import ptgbot.db
 
 try:
     import daemon.pidlockfile as pid_file_module
@@ -50,7 +53,7 @@ ANTI_FLOOD_SLEEP = 2
 class PTGBot(irc.bot.SingleServerIRCBot):
     log = logging.getLogger("ptgbot.bot")
 
-    def __init__(self, nickname, password, server, port, channels):
+    def __init__(self, nickname, password, server, port, channels, dbfile):
         if port == 6697:
             factory = irc.connection.Factory(wrapper=ssl.wrap_socket)
             irc.bot.SingleServerIRCBot.__init__(self,
@@ -65,6 +68,7 @@ class PTGBot(irc.bot.SingleServerIRCBot):
         self.password = password
         self.channel_list = channels
         self.identify_msg_cap = False
+        self.data = ptgbot.db.PTGDataBase(dbfile)
 
     def on_nicknameinuse(self, c, e):
         self.log.debug("Nickname in use, releasing")
@@ -94,21 +98,39 @@ class PTGBot(irc.bot.SingleServerIRCBot):
             self.log.debug("identify-msg cap acked")
             self.identify_msg_cap = True
 
+    def usage(self, channel):
+        self.send(channel, "Format is '@ROOM [until|at] HOUR SESSION'")
+
     def on_pubmsg(self, c, e):
         if not self.identify_msg_cap:
             self.log.debug("Ignoring message because identify-msg "
                            "cap not enabled")
             return
         nick = e.source.split('!')[0]
-        auth = e.arguments[0][0]
+        auth = e.arguments[0][0] == '+'
         msg = e.arguments[0][1:]
+        chan = e.target
 
-        if msg.startswith('#test'):
-            self.handle_test_command(e.target, nick, auth, msg)
+        if msg.startswith('@') and auth:
+            words = msg.split()
+            if len(words) < 4:
+                self.send(chan, "%s: Incorrect number of arguments" % (nick,))
+                self.usage(chan)
+                return
+            room = words[0][1:].lower()
+            # TODO: Add test for room/day/person match
+            adverb = words[1].lower()
+            if adverb not in ['until', 'at']:
+                self.send(chan, "%s: unknown directive '%s'" % (nick, adverb))
+                self.usage(chan)
+                return
+            hour = words[2]
+            # TODO: Add test for hour format
+            session = str.join(' ', words[3:])
+
+            msg = '(%s %s) %s' % (adverb, hour, session)
+            self.data.add(room, adverb, hour, msg)
             return
-
-    def handle_test_command(self, channel, nick, auth, msg):
-        self.send(channel, "%s: I'm here" % (nick,))
 
     def send(self, channel, msg):
         self.connection.privmsg(channel, msg)
@@ -135,7 +157,8 @@ def start(configpath):
                  config.get('ircbot', 'pass'),
                  config.get('ircbot', 'server'),
                  config.getint('ircbot', 'port'),
-                 channels)
+                 channels,
+                 config.get('ircbot', 'db'))
     bot.start()
 
 

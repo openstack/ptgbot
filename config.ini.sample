@@ -1,0 +1,7 @@
+[ircbot]
+nick=NICKNAME
+pass=PASSWORD
+server=irc.freenode.net
+port=6667
+channels=foo,bar
+db=/tmp/db.json

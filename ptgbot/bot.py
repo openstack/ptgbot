@@ -14,17 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# The configuration file should look like:
-"""
-[ircbot]
-nick=NICKNAME
-pass=PASSWORD
-server=irc.freenode.net
-port=6667
-channels=foo,bar
-db=/tmp/db.json
-"""
-
 import argparse
 import configparser
 import daemon

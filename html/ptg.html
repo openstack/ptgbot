@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Currently at the PTG</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container">
+<h2>OpenStack Project Teams Gathering</h2>
+<p>See what is being discussed currently at the PTG, and what's coming next.<p>
+<div id="PTGsessions">
+</div>
+<p class="text-muted">Content on this page is being driven by room operators through the ptgbot on the #openstack-ptg IRC channel.</p>
+</div>
+
+<script id="PTGtemplate" type="text/x-handlebars-template">
+<div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">Currently playing</h3></div>
+  <ul class="list-group">
+  {{#each until}}
+    <li class="list-group-item"><span class="label label-primary">{{@key}}</span> {{this.msg}}</li>
+  {{/each}}
+  </ul>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">Next discussions</h3></div>
+  <ul class="list-group">
+  {{#each at}}
+    <li class="list-group-item"><span class="label label-primary">{{@key}}</span> {{this.msg}}</li>
+  {{/each}}
+  </ul>
+</div>
+
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.js"></script>
+<script src="ptg.js"></script>
+
+</body>
+</html>

@@ -29,9 +29,9 @@ class PTGDataBase():
             self.data = {}
 
     def add(self, room, adverb, hour, msg):
-        if room not in self.data:
-            self.data[room] = {}
-        self.data[room][adverb] = {'msg': msg, 'expiry': hour}
+        if adverb not in self.data:
+            self.data[adverb] = {}
+        self.data[adverb][room] = {'msg': msg, 'expiry': hour}
         self.save()
 
     def expire(self, now):

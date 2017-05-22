@@ -3,9 +3,9 @@ OpenStack PTG Bot
 =================
 
 ptgbot is the bot that PTG room moderators use to surface what's
-currently happening at the event. Commands follow the following format:
+currently happening at the event. Commands follow the following format::
 
-@ROOMNAME [now|next] TIME TOPIC
+  #ROOMNAME [now|next] TOPIC
 
 From that information the bot builds a static webpage with discussion
 topics currently discussed ("now") and an indicative set of discussion
@@ -34,7 +34,7 @@ Example::
 Testing
 =======
 
-Copy config.ini.sample to config.ini:
+Copy config.ini.sample to config.ini::
 
   cp config.ini.sample config.ini
 
@@ -54,7 +54,7 @@ In one terminal, run the bot::
 
 Join that channel and give a command to the bot::
 
-  @swift now discussing ring placement
+  #swift now discussing ring placement
 
 (note, the bot currently only takes commands from Freenode identified users)
 

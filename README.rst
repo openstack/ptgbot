@@ -11,10 +11,12 @@ From that information the bot builds a static webpage with discussion
 topics currently discussed ("now") and an indicative set of discussion
 topics coming up next ("next").
 
-NB:
+Please note that:
+
 * There can only be one "now" topic at a time. If multiple topics are
   discussed at the same time in various corners of the room, they should
   all be specified in a single "now" command.
+
 * In order to ensure that information is current, entering a "now" command
   wipes out any "next" entry for the same room. You might want to refresh
   those after entering a "now" topic.
@@ -36,15 +38,15 @@ Copy config.ini.sample to config.ini:
 
   cp config.ini.sample config.ini
 
-Edit config.ini contents, for example:
+Edit config.ini contents, for example::
 
-[ircbot]
-nick=ptgbot
-pass=
-server=irc.freenode.net
-port=6667
-channels=testptg
-db=html/ptg.json
+  [ircbot]
+  nick=ptgbot
+  pass=
+  server=irc.freenode.net
+  port=6667
+  channels=testptg
+  db=html/ptg.json
 
 In one terminal, run the bot::
 
@@ -56,10 +58,8 @@ Join that channel and give a command to the bot::
 
 (note, the bot currently only takes commands from Freenode identified users)
 
-In another terminal, start the webserver:
+In another terminal, start the webserver::
 
   cd html && python -m SimpleHTTPServer
 
-Open the web page in a web browser:
-
-  http://127.0.0.1:8000/ptg.html
+Open the web page in a web browser: http://127.0.0.1:8000/ptg.html

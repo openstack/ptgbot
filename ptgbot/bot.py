@@ -88,7 +88,7 @@ class PTGBot(irc.bot.SingleServerIRCBot):
             self.identify_msg_cap = True
 
     def usage(self, channel):
-        self.send(channel, "Format is '@ROOM [until|at] HOUR SESSION'")
+        self.send(channel, "Format is '@ROOM [now|next] SESSION'")
 
     def on_pubmsg(self, c, e):
         if not self.identify_msg_cap:
@@ -100,26 +100,23 @@ class PTGBot(irc.bot.SingleServerIRCBot):
         msg = e.arguments[0][1:]
         chan = e.target
 
-        if msg.startswith('@') and auth:
+        if msg.startswith('#') and auth:
             words = msg.split()
-            if len(words) < 4:
+            if len(words) < 3:
                 self.send(chan, "%s: Incorrect number of arguments" % (nick,))
                 self.usage(chan)
                 return
             room = words[0][1:].lower()
             # TODO: Add test for room/day/person match
             adverb = words[1].lower()
-            if adverb not in ['until', 'at']:
+            session = str.join(' ', words[2:])
+            if adverb == 'now':
+                self.data.add_now(room, session)
+            elif adverb == 'next':
+                self.data.add_next(room, session)
+            else:
                 self.send(chan, "%s: unknown directive '%s'" % (nick, adverb))
                 self.usage(chan)
-                return
-            hour = words[2]
-            # TODO: Add test for hour format
-            session = str.join(' ', words[3:])
-
-            msg = '(%s %s) %s' % (adverb, hour, session)
-            self.data.add(room, adverb, hour, msg)
-            return
 
     def send(self, channel, msg):
         self.connection.privmsg(channel, msg)

@@ -18,20 +18,34 @@
 
 <script id="PTGtemplate" type="text/x-handlebars-template">
 <div class="panel panel-default">
-  <div class="panel-heading"><h3 class="panel-title">Currently playing</h3></div>
-  <ul class="list-group">
-  {{#each until}}
-    <li class="list-group-item"><span class="label label-primary">{{@key}}</span> {{this.msg}}</li>
+  <div class="panel-heading"><h3 class="panel-title">Currently playing...</h3></div>
+  <table class="table">
+  {{#each now}}
+    <tr>
+      <td class="col-sm-1"><span class="label label-primary">{{@key}}</span></td>
+      <td>{{this}}</td>
+    </tr>
+  {{else}}
+    <tr><td><small><i>Nothing yet</i></small><td></tr>
   {{/each}}
-  </ul>
+  </table>
 </div>
 <div class="panel panel-default">
-  <div class="panel-heading"><h3 class="panel-title">Next discussions</h3></div>
-  <ul class="list-group">
-  {{#each at}}
-    <li class="list-group-item"><span class="label label-primary">{{@key}}</span> {{this.msg}}</li>
+  <div class="panel-heading"><h3 class="panel-title">Coming up next...</h3></div>
+  <table class="table">
+  {{#each next as |sessions room|}}
+  <tr>
+    <td class="col-sm-1"><span class="label label-primary">{{room}}</span></td>
+    <td>
+    {{#each sessions}}
+      {{ this }}<br/>
+    {{/each}}
+    </td>
+  </tr>
+  {{else}}
+    <tr><td><small><i>Nothing yet</i></small><td></tr>
   {{/each}}
-  </ul>
+  </table>
 </div>
 
 </script>

@@ -26,28 +26,25 @@ class PTGDataBase():
             with open(filename, 'r') as fp:
                 self.data = json.load(fp)
         else:
-            self.data = {}
+            self.data = {'now': {}, 'next': {}}
 
-    def add(self, room, adverb, hour, msg):
-        if adverb not in self.data:
-            self.data[adverb] = {}
-        self.data[adverb][room] = {'msg': msg, 'expiry': hour}
+    def add_now(self, room, session):
+        self.data['now'][room] = session
+        if room in self.data['next']:
+            del self.data['next'][room]
         self.save()
 
-    def expire(self, now):
-        newdata = []
-        for room, infos in self.data.items():
-            for info, session in infos:
-                if session['expiry'] > now:
-                    newdata[room][info] = session
-        self.data = newdata
+    def add_next(self, room, session):
+        if room not in self.data['next']:
+            self.data['next'][room] = []
+        self.data['next'][room].append(session)
+        self.save()
 
     def from_ethercalc(self):
         # TODO: Load from ethercalc
         pass
 
     def save(self):
-        # self.expire()
         # self.from_ethercalc()
         with open(self.filename, 'w') as fp:
             json.dump(self.data, fp)

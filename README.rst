@@ -46,7 +46,11 @@ Edit config.ini contents, for example::
   server=irc.freenode.net
   port=6667
   channels=testptg
-  db=html/ptg.json
+
+  [db]
+  filename=html/ptg.json
+  ethercalc=
+  cells=
 
 In one terminal, run the bot::
 

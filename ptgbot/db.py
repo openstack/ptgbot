@@ -44,13 +44,15 @@ class PTGDataBase():
         self.save()
 
     def from_ethercalc(self):
-        ethercalc = requests.get(self.ethercalc_url).json()
-        self.data['ethercalc'] = []
-        for cell in self.ethercalc_cells:
-            if 'comment' in ethercalc[cell] and 'datavalue' in ethercalc[cell]:
-                msg = '%s: %s' % (ethercalc[cell]['comment'],
-                                  ethercalc[cell]['datavalue'])
-                self.data['ethercalc'].append(msg)
+        if self.ethercalc_url:
+            ethercalc = requests.get(self.ethercalc_url).json()
+            self.data['ethercalc'] = []
+            for cell in self.ethercalc_cells:
+                if ('comment' in ethercalc[cell] and
+                   'datavalue' in ethercalc[cell]):
+                    msg = '%s: %s' % (ethercalc[cell]['comment'],
+                                      ethercalc[cell]['datavalue'])
+                    self.data['ethercalc'].append(msg)
 
     def wipe(self):
         self.data = {'now': {}, 'next': {}}

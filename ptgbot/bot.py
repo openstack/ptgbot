@@ -100,7 +100,11 @@ class PTGBot(irc.bot.SingleServerIRCBot):
         msg = e.arguments[0][1:]
         chan = e.target
 
-        if msg.startswith('#') and auth:
+        if msg.startswith('#'):
+            if not (self.channels[chan].is_voiced(nick) or
+                    self.channels[chan].is_oper(nick)):
+                self.send(chan, "%s: Need voice to issue commands" % (nick,))
+                return
             words = msg.split()
             if len(words) < 3:
                 self.send(chan, "%s: Incorrect number of arguments" % (nick,))

@@ -23,7 +23,7 @@
   {{#each now}}
     <tr>
       <td class="col-sm-1"><span class="label label-primary">{{@key}}</span></td>
-      <td>{{this}}</td>
+      <td>{{#hashtag}}{{this}}{{/hashtag}}</td>
     </tr>
   {{else}}
     <tr><td><small><i>Nothing yet</i></small><td></tr>
@@ -38,7 +38,7 @@
     <td class="col-sm-1"><span class="label label-primary">{{room}}</span></td>
     <td>
     {{#each sessions}}
-      {{ this }}<br/>
+      {{#hashtag}}{{this}}{{/hashtag}}<br/>
     {{/each}}
     </td>
   </tr>
@@ -52,7 +52,7 @@
   <table class="table">
   {{#each ethercalc}}
     <tr>
-      <td>{{this}}</td>
+      <td>{{#hashtag}}{{this}}{{/hashtag}}</td>
     </tr>
   {{else}}
     <tr><td><small><i>Nothing yet</i></small><td></tr>

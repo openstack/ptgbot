@@ -124,6 +124,19 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                 return
             self.send(chan, "%s: ack" % (nick,))
 
+        if msg.startswith('!'):
+            if not self.channels[chan].is_oper(nick):
+                self.send(chan, "%s: Need op for admin commands" % (nick,))
+                return
+            words = msg.split()
+            command = words[0][1:].lower()
+            if command == 'wipe':
+                self.data.wipe()
+            else:
+                self.send(chan, "%s: unknown command '%s'" % (nick, command))
+                return
+            self.send(chan, "%s: done" % (nick,))
+
     def send(self, channel, msg):
         self.connection.privmsg(channel, msg)
         time.sleep(ANTI_FLOOD_SLEEP)

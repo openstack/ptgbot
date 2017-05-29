@@ -44,6 +44,10 @@ class PTGDataBase():
         # TODO: Load from ethercalc
         pass
 
+    def wipe(self):
+        self.data = {'now': {}, 'next': {}}
+        self.save()
+
     def save(self):
         # self.from_ethercalc()
         with open(self.filename, 'w') as fp:

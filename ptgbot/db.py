@@ -16,17 +16,20 @@
 
 import json
 import os
+import requests
 
 
 class PTGDataBase():
 
-    def __init__(self, filename):
+    def __init__(self, filename, ethercalc_url, ethercalc_cells):
         self.filename = filename
+        self.ethercalc_url = ethercalc_url
+        self.ethercalc_cells = ethercalc_cells.split(' ')
         if os.path.isfile(filename):
             with open(filename, 'r') as fp:
                 self.data = json.load(fp)
         else:
-            self.data = {'now': {}, 'next': {}}
+            self.data = {'ethercalc': [], 'now': {}, 'next': {}}
 
     def add_now(self, room, session):
         self.data['now'][room] = session
@@ -41,14 +44,19 @@ class PTGDataBase():
         self.save()
 
     def from_ethercalc(self):
-        # TODO: Load from ethercalc
-        pass
+        ethercalc = requests.get(self.ethercalc_url).json()
+        self.data['ethercalc'] = []
+        for cell in self.ethercalc_cells:
+            if 'comment' in ethercalc[cell] and 'datavalue' in ethercalc[cell]:
+                msg = '%s: %s' % (ethercalc[cell]['comment'],
+                                  ethercalc[cell]['datavalue'])
+                self.data['ethercalc'].append(msg)
 
     def wipe(self):
         self.data = {'now': {}, 'next': {}}
         self.save()
 
     def save(self):
-        # self.from_ethercalc()
+        self.from_ethercalc()
         with open(self.filename, 'w') as fp:
             json.dump(self.data, fp)

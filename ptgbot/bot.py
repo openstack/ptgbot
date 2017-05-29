@@ -42,7 +42,7 @@ ANTI_FLOOD_SLEEP = 2
 class PTGBot(irc.bot.SingleServerIRCBot):
     log = logging.getLogger("ptgbot.bot")
 
-    def __init__(self, nickname, password, server, port, channels, dbfile):
+    def __init__(self, nickname, password, server, port, channels, db):
         if port == 6697:
             factory = irc.connection.Factory(wrapper=ssl.wrap_socket)
             irc.bot.SingleServerIRCBot.__init__(self,
@@ -57,7 +57,7 @@ class PTGBot(irc.bot.SingleServerIRCBot):
         self.password = password
         self.channel_list = channels
         self.identify_msg_cap = False
-        self.data = ptgbot.db.PTGDataBase(dbfile)
+        self.data = db
 
     def on_nicknameinuse(self, c, e):
         self.log.debug("Nickname in use, releasing")
@@ -158,12 +158,17 @@ def start(configpath):
     channels = ['#' + name.strip() for name in
                 config.get('ircbot', 'channels').split(',')]
 
+    db = ptgbot.db.PTGDataBase(
+        config.get('db', 'filename'),
+        config.get('db', 'ethercalc'),
+        config.get('db', 'cells'))
+
     bot = PTGBot(config.get('ircbot', 'nick'),
                  config.get('ircbot', 'pass'),
                  config.get('ircbot', 'server'),
                  config.getint('ircbot', 'port'),
                  channels,
-                 config.get('ircbot', 'db'))
+                 db)
     bot.start()
 
 

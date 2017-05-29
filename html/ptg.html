@@ -47,6 +47,18 @@
   {{/each}}
   </table>
 </div>
+<div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">Planned for today in reservable rooms</h3></div>
+  <table class="table">
+  {{#each ethercalc}}
+    <tr>
+      <td>{{this}}</td>
+    </tr>
+  {{else}}
+    <tr><td><small><i>Nothing yet</i></small><td></tr>
+  {{/each}}
+  </table>
+</div>
 
 </script>
 

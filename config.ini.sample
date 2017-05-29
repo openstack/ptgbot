@@ -4,4 +4,8 @@ pass=PASSWORD
 server=irc.freenode.net
 port=6667
 channels=foo,bar
-db=html/ptg.json
+
+[db]
+filename=html/ptg.json
+ethercalc=https://ethercalc.openstack.org/_/MyDocumentName/cells
+cells=E9 E10

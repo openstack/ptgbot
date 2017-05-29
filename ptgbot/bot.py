@@ -121,6 +121,8 @@ class PTGBot(irc.bot.SingleServerIRCBot):
             else:
                 self.send(chan, "%s: unknown directive '%s'" % (nick, adverb))
                 self.usage(chan)
+                return
+            self.send(chan, "%s: ack" % (nick,))
 
     def send(self, channel, msg):
         self.connection.privmsg(channel, msg)

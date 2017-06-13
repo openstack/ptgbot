@@ -21,6 +21,8 @@ import requests
 
 class PTGDataBase():
 
+    BASE = {'rooms': [], 'ethercalc': [], 'now': {}, 'next': {}}
+
     def __init__(self, filename, ethercalc_url, ethercalc_cells):
         self.filename = filename
         self.ethercalc_url = ethercalc_url
@@ -29,7 +31,7 @@ class PTGDataBase():
             with open(filename, 'r') as fp:
                 self.data = json.load(fp)
         else:
-            self.data = {'ethercalc': [], 'now': {}, 'next': {}}
+            self.data = self.BASE
 
     def add_now(self, room, session):
         self.data['now'][room] = session
@@ -41,6 +43,32 @@ class PTGDataBase():
         if room not in self.data['next']:
             self.data['next'][room] = []
         self.data['next'][room].append(session)
+        self.save()
+
+    def is_room_valid(self, room):
+        return room in self.data['rooms']
+
+    def list_rooms(self):
+        return self.data['rooms']
+
+    def add_rooms(self, rooms):
+        for room in rooms:
+            if room not in self.data['rooms']:
+                self.data['rooms'].append(room)
+        self.save()
+
+    def del_rooms(self, rooms):
+        for room in rooms:
+            if room in self.data['rooms']:
+                self.data['rooms'].remove(room)
+        self.save()
+
+    def clean_rooms(self, rooms):
+        for room in rooms:
+            if room in self.data['now']:
+                del self.data['now'][room]
+            if room in self.data['next']:
+                del self.data['next'][room]
         self.save()
 
     def from_ethercalc(self):
@@ -55,7 +83,7 @@ class PTGDataBase():
                     self.data['ethercalc'].append(msg)
 
     def wipe(self):
-        self.data = {'now': {}, 'next': {}}
+        self.data = self.BASE
         self.save()
 
     def save(self):

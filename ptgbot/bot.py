@@ -90,6 +90,13 @@ class PTGBot(irc.bot.SingleServerIRCBot):
     def usage(self, channel):
         self.send(channel, "Format is '@ROOM [now|next] SESSION'")
 
+    def send_room_list(self, channel):
+        rooms = self.data.list_rooms()
+        if rooms:
+            self.send(channel, "Active rooms: %s" % str.join(' ', rooms))
+        else:
+            self.send(channel, "There are no active rooms defined yet")
+
     def on_pubmsg(self, c, e):
         if not self.identify_msg_cap:
             self.log.debug("Ignoring message because identify-msg "
@@ -104,13 +111,19 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                     self.channels[chan].is_oper(nick)):
                 self.send(chan, "%s: Need voice to issue commands" % (nick,))
                 return
+
             words = msg.split()
             if len(words) < 3:
                 self.send(chan, "%s: Incorrect number of arguments" % (nick,))
                 self.usage(chan)
                 return
+
             room = words[0][1:].lower()
-            # TODO: Add test for room/day/person match
+            if not self.data.is_room_valid(room):
+                self.send(chan, "%s: unknown room '%s'" % (nick, room))
+                self.send_room_list(chan)
+                return
+
             adverb = words[1].lower()
             session = str.join(' ', words[2:])
             if adverb == 'now':
@@ -131,6 +144,14 @@ class PTGBot(irc.bot.SingleServerIRCBot):
             command = words[0][1:].lower()
             if command == 'wipe':
                 self.data.wipe()
+            elif command == 'list':
+                self.send_room_list(chan)
+                return
+            elif command in ('clean', 'add', 'del'):
+                if len(words) < 2:
+                    self.send(chan, "this command takes one or more arguments")
+                    return
+                getattr(self.data, command + '_rooms')(words[1:])
             else:
                 self.send(chan, "%s: unknown command '%s'" % (nick, command))
                 return

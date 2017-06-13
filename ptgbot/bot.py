@@ -96,7 +96,6 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                            "cap not enabled")
             return
         nick = e.source.split('!')[0]
-        auth = e.arguments[0][0] == '+'
         msg = e.arguments[0][1:]
         chan = e.target
 

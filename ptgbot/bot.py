@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
-# Copyright (c) 2017, Thierry Carrez
+# Copyright 2011, 2013 OpenStack Foundation
+# Copyright 2012 Hewlett-Packard Development Company, L.P.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

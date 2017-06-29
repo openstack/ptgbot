@@ -1,10 +1,40 @@
 {
-"irc_nick": "NICK",
-"irc_pass": "PASS",
-"irc_server": "irc.freenode.net",
-"irc_port": 6667,
-"irc_channel": "#mychannel",
-"db_filename": "html/ptg.json",
-"ethercalc_url": "https://ethercalc.openstack.org/_/YOURDOC/cells",
-"ethercalc_cells": ["E9", "E10", "E11"]
+  "irc_nick": "NICK",
+  "irc_pass": "",
+  "irc_server": "irc.freenode.net",
+  "irc_port": 6667,
+  "irc_channel": "#CHANNEL",
+  "db_filename": "html/ptg.json",
+  "ethercalc_url": "https://ethercalc.openstack.org/_/MYDOC/cells",
+  "ethercalc_cells": {
+    "room_line": "8",
+    "time_column": "A",
+    "time_range": [ 9, 24 ],
+    "days": [
+      {
+        "B": ["14", "15", "16"],
+        "C": [],
+        "D": []
+      },
+      {
+        "E": ["14", "15", "16"],
+        "F": [],
+        "G": []
+      },
+      {
+        "H": ["14", "15", "16"],
+        "I": [],
+        "J": []
+      },
+      {
+        "K": ["14", "15", "16"],
+        "L": [],
+        "M": []
+      },
+      {
+        "N": [],
+        "O": []
+      }
+    ]
+  }
 }

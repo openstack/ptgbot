@@ -16,6 +16,7 @@
 
 import json
 import os
+import datetime
 
 
 class PTGDataBase():
@@ -30,6 +31,7 @@ class PTGDataBase():
                 self.data = json.load(fp)
         else:
             self.data = self.BASE
+        self.save()
 
     def add_now(self, room, session):
         self.data['now'][room] = session
@@ -76,5 +78,7 @@ class PTGDataBase():
     def save(self):
         if self.ethercalc:
             self.data['ethercalc'] = self.ethercalc.load()
+        timestamp = datetime.datetime.now()
+        self.data['timestamp'] = '{:%Y-%m-%d %H:%M:%S}'.format(timestamp)
         with open(self.filename, 'w') as fp:
             json.dump(self.data, fp)

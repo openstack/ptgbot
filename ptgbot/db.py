@@ -26,7 +26,7 @@ class PTGDataBase():
     def __init__(self, filename, ethercalc_url, ethercalc_cells):
         self.filename = filename
         self.ethercalc_url = ethercalc_url
-        self.ethercalc_cells = ethercalc_cells.split(' ')
+        self.ethercalc_cells = ethercalc_cells
         if os.path.isfile(filename):
             with open(filename, 'r') as fp:
                 self.data = json.load(fp)

@@ -16,9 +16,9 @@
 # limitations under the License.
 
 import argparse
-import configparser
 import daemon
 import irc.bot
+import json
 import logging.config
 import os
 import time
@@ -43,7 +43,7 @@ ANTI_FLOOD_SLEEP = 2
 class PTGBot(irc.bot.SingleServerIRCBot):
     log = logging.getLogger("ptgbot.bot")
 
-    def __init__(self, nickname, password, server, port, channels, db):
+    def __init__(self, nickname, password, server, port, channel, db):
         if port == 6697:
             factory = irc.connection.Factory(wrapper=ssl.wrap_socket)
             irc.bot.SingleServerIRCBot.__init__(self,
@@ -56,7 +56,7 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                                                 nickname, nickname)
         self.nickname = nickname
         self.password = password
-        self.channel_list = channels
+        self.channel = channel
         self.identify_msg_cap = False
         self.data = db
 
@@ -77,10 +77,9 @@ class PTGBot(irc.bot.SingleServerIRCBot):
         if (self.password):
             self.log.debug("Identifying to nickserv")
             c.privmsg("nickserv", "identify %s " % self.password)
-        for channel in self.channel_list:
-            self.log.info("Joining %s" % channel)
-            c.join(channel)
-            time.sleep(ANTI_FLOOD_SLEEP)
+        self.log.info("Joining %s" % self.channel)
+        c.join(self.channel)
+        time.sleep(ANTI_FLOOD_SLEEP)
 
     def on_cap(self, c, e):
         self.log.debug("Received cap response %s" % repr(e.arguments))
@@ -164,11 +163,11 @@ class PTGBot(irc.bot.SingleServerIRCBot):
 
 
 def start(configpath):
-    config = configparser.RawConfigParser()
-    config.read(configpath)
+    with open(configpath, 'r') as fp:
+        config = json.load(fp)
 
-    if config.has_option('ircbot', 'log_config'):
-        log_config = config.get('ircbot', 'log_config')
+    if 'log_config' in config:
+        log_config = config['log_config']
         fp = os.path.expanduser(log_config)
         if not os.path.exists(fp):
             raise Exception("Unable to read logging config file at %s" % fp)
@@ -176,27 +175,23 @@ def start(configpath):
     else:
         logging.basicConfig(level=logging.DEBUG)
 
-    channels = ['#' + name.strip() for name in
-                config.get('ircbot', 'channels').split(',')]
-
     db = ptgbot.db.PTGDataBase(
-        config.get('db', 'filename'),
-        config.get('db', 'ethercalc'),
-        config.get('db', 'cells'))
+        config['db_filename'],
+        config.get('ethercalc_url'),
+        config.get('ethercalc_cells'))
 
-    bot = PTGBot(config.get('ircbot', 'nick'),
-                 config.get('ircbot', 'pass'),
-                 config.get('ircbot', 'server'),
-                 config.getint('ircbot', 'port'),
-                 channels,
+    bot = PTGBot(config['irc_nick'],
+                 config.get('irc_pass', ''),
+                 config['irc_server'],
+                 config['irc_port'],
+                 config['irc_channel'],
                  db)
     bot.start()
 
 
 def main():
     parser = argparse.ArgumentParser(description='PTG bot.')
-    parser.add_argument('configfile', nargs=1,
-                        help='specify the config file')
+    parser.add_argument('configfile', help='specify the config file')
     parser.add_argument('-d', dest='nodaemon', action='store_true',
                         help='do not run as a daemon')
     args = parser.parse_args()

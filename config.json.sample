@@ -1,0 +1,10 @@
+{
+"irc_nick": "NICK",
+"irc_pass": "PASS",
+"irc_server": "irc.freenode.net",
+"irc_port": 6667,
+"irc_channel": "#mychannel",
+"db_filename": "html/ptg.json",
+"ethercalc_url": "https://ethercalc.openstack.org/_/YOURDOC/cells",
+"ethercalc_cells": ["E9", "E10", "E11"]
+}

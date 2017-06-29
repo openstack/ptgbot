@@ -34,27 +34,23 @@ Example::
 Testing
 =======
 
-Copy config.ini.sample to config.ini::
+Copy config.json.sample to config.json::
 
-  cp config.ini.sample config.ini
+  cp config.json.sample config.json
 
-Edit config.ini contents, for example::
+Edit config.json contents, for example::
 
-  [ircbot]
-  nick=ptgbot
-  pass=
-  server=irc.freenode.net
-  port=6667
-  channels=testptg
-
-  [db]
-  filename=html/ptg.json
-  ethercalc=
-  cells=
+  {
+  "irc_nick": "ptgbot",
+  "irc_server": "irc.freenode.net",
+  "irc_port": 6667,
+  "irc_channel": "#testptg",
+  "db_filename": "html/ptg.json",
+  }
 
 In one terminal, run the bot::
 
-  tox -evenv -- ptgbot -d config.ini
+  tox -evenv -- ptgbot -d config.json
 
 Join that channel and give a command to the bot::
 

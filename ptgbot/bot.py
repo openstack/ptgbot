@@ -137,7 +137,7 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                 return
             self.send(chan, "%s: ack" % (nick,))
 
-        if msg.startswith('!'):
+        if msg.startswith('~'):
             if not self.channels[chan].is_oper(nick):
                 self.send(chan, "%s: Need op for admin commands" % (nick,))
                 return

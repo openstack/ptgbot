@@ -3,13 +3,24 @@ OpenStack PTG Bot
 =================
 
 ptgbot is the bot that PTG room moderators use to surface what's
-currently happening at the event. Commands follow the following format::
+currently happening at the event. Room operators send messages to
+the bot, like::
+
+  #swift now discussing ring balancing
+
+and from that information the bot builds a static webpage with discussion
+topics currently discussed ("now") and an indicative set of discussion
+topics coming up next ("next"). It also merges information from the
+reservable rooms ethercalc in order to produce a single, static,
+mobile-friendly page.
+
+Room operators commands
+=======================
+
+You have to have voice in the channel (+v) to send commands to the ptgbot.
+Commands follow the following format::
 
   #ROOMNAME [now|next] TOPIC
-
-From that information the bot builds a static webpage with discussion
-topics currently discussed ("now") and an indicative set of discussion
-topics coming up next ("next").
 
 Please note that:
 
@@ -31,8 +42,29 @@ Example::
   #swift next at 3pm we plan to cover cold storage features
 
 
-Testing
-=======
+Admin commands
+==============
+
+You have to ve a channel operator (+o) to use admin commands.
+
+~list
+  List available room names
+
+~add ROOM [ROOM..]
+  Add new room name(s)
+
+~del ROOM [ROOM..]
+  Deletes room name(s)
+
+~clean ROOM [ROOM..]
+  Removes active entries for specified room(s)
+
+~wipe
+  Resets the database entirely (removes all defined rooms and entries)
+
+
+Local testing
+=============
 
 Copy config.json.sample to config.json::
 

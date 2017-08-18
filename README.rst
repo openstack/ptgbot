@@ -41,6 +41,11 @@ Example::
   #swift now discussing #glance support, come over!
   #swift next at 3pm we plan to cover cold storage features
 
+You can also remove all entries related to your room by issuing the following
+command::
+
+  #ROOMNAME clean
+
 
 Admin commands
 ==============

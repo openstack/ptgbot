@@ -89,7 +89,8 @@ class PTGBot(irc.bot.SingleServerIRCBot):
             self.identify_msg_cap = True
 
     def usage(self, channel):
-        self.send(channel, "Format is '@ROOM [now|next] SESSION'")
+        self.send(channel,
+                  "Format is '#ROOMNAME [ now ... | next ... | clean ]'")
 
     def send_room_list(self, channel):
         rooms = self.data.list_rooms()
@@ -114,7 +115,8 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                 return
 
             words = msg.split()
-            if len(words) < 3:
+            if ((len(words) < 2) or
+               (len(words) == 2 and words[1].lower() != 'clean')):
                 self.send(chan, "%s: Incorrect number of arguments" % (nick,))
                 self.usage(chan)
                 return
@@ -131,6 +133,8 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                 self.data.add_now(room, session)
             elif adverb == 'next':
                 self.data.add_next(room, session)
+            elif adverb == 'clean':
+                self.data.clean_rooms([room])
             else:
                 self.send(chan, "%s: unknown directive '%s'" % (nick, adverb))
                 self.usage(chan)

@@ -139,7 +139,6 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                 self.send(chan, "%s: unknown directive '%s'" % (nick, adverb))
                 self.usage(chan)
                 return
-            self.send(chan, "%s: ack" % (nick,))
 
         if msg.startswith('~'):
             if not self.channels[chan].is_oper(nick):
@@ -160,7 +159,6 @@ class PTGBot(irc.bot.SingleServerIRCBot):
             else:
                 self.send(chan, "%s: unknown command '%s'" % (nick, command))
                 return
-            self.send(chan, "%s: done" % (nick,))
 
     def send(self, channel, msg):
         self.connection.privmsg(channel, msg)

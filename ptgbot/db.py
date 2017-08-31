@@ -21,7 +21,7 @@ import datetime
 
 class PTGDataBase():
 
-    BASE = {'rooms': [], 'ethercalc': [], 'now': {}, 'next': {}}
+    BASE = {'rooms': [], 'ethercalc': [], 'now': {}, 'next': {}, 'colors': {}}
 
     def __init__(self, filename, ethercalc):
         self.filename = filename
@@ -37,6 +37,10 @@ class PTGDataBase():
         self.data['now'][room] = session
         if room in self.data['next']:
             del self.data['next'][room]
+        self.save()
+
+    def add_color(self, room, color):
+        self.data['colors'][room] = color
         self.save()
 
     def add_next(self, room, session):

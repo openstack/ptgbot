@@ -16,12 +16,19 @@
 </div>
 
 <script id="PTGtemplate" type="text/x-handlebars-template">
+<style>
+{{#each colors as |color room|}}
+.{{room}} {
+    background-color: {{color}};
+}
+{{/each}}
+</style>
 <div class="panel panel-default">
   <div class="panel-heading"><h3 class="panel-title">Currently playing...</h3></div>
   <table class="table">
   {{#each now}}
     <tr>
-      <td class="col-sm-1"><span class="label label-primary">{{@key}}</span></td>
+      <td class="col-sm-1"><span class="label label-primary {{@key}}">{{@key}}</span></td>
       <td>{{#hashtag}}{{this}}{{/hashtag}}</td>
     </tr>
   {{else}}
@@ -34,7 +41,7 @@
   <table class="table">
   {{#each next as |sessions room|}}
   <tr>
-    <td class="col-sm-1"><span class="label label-primary">{{room}}</span></td>
+    <td class="col-sm-1"><span class="label label-primary {{room}}">{{room}}</span></td>
     <td>
     {{#each sessions}}
       {{#hashtag}}{{this}}{{/hashtag}}<br/>

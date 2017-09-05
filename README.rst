@@ -21,6 +21,7 @@ You have to have voice in the channel (+v) to send commands to the ptgbot.
 Commands follow the following format::
 
   #ROOMNAME [now|next] TOPIC
+  #ROOMNAME [color] CSS_COLOR_SPECIFIER
 
 Please note that:
 
@@ -32,14 +33,23 @@ Please note that:
   wipes out any "next" entry for the same room. You might want to refresh
   those after entering a "now" topic.
 
+* The color command only sets the background color for the room
+  name. The foreground is always white. Colors can be specified in any
+  form supported by the CSS attribute background-color.
+
 Example::
 
   #swift now discussing ring placement
+  #swift color blue
   #swift next at 2pm we plan to discuss #glance support
   #swift next around 3pm we plan to cover cold storage features
   ...
   #swift now discussing #glance support, come over!
   #swift next at 3pm we plan to cover cold storage features
+  ...
+  #oslo now discussing oslo.config drivers
+  #oslo color #42f4c5
+  #oslo next after lunch we plan to discuss auto-generating config reference docs
 
 You can also remove all entries related to your room by issuing the following
 command::

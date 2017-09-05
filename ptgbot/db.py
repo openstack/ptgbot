@@ -49,7 +49,7 @@ class PTGDataBase():
         return room in self.data['rooms']
 
     def list_rooms(self):
-        return self.data['rooms']
+        return sorted(self.data['rooms'])
 
     def add_rooms(self, rooms):
         for room in rooms:

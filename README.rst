@@ -60,7 +60,7 @@ command::
 Admin commands
 ==============
 
-You have to ve a channel operator (+o) to use admin commands.
+You have to be a channel operator (+o) to use admin commands.
 
 ~list
   List available room names

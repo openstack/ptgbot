@@ -137,6 +137,8 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                 self.data.clean_rooms([room])
             elif adverb == 'color':
                 self.data.add_color(room, session)
+            elif adverb == 'location':
+                self.data.add_location(room, session)
             else:
                 self.send(chan, "%s: unknown directive '%s'" % (nick, adverb))
                 self.usage(chan)

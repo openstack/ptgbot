@@ -27,12 +27,14 @@
 <div class="panel panel-default">
   <div class="panel-heading"><h3 class="panel-title">Currently playing...</h3></div>
   <table class="table">
-  {{#each now as |what room|}}
+  {{#each rooms as |room| }}
+  {{#if (lookup @root.now room) }}
     <tr>
       <td class="col-sm-1"><span class="label label-primary {{room}}">{{room}}</span></td>
-      <td>{{#hashtag}}{{what}}{{/hashtag}}</td>
+      <td>{{#hashtag}}{{lookup @root.now room}}{{/hashtag}}</td>
       <td>{{lookup @root.location room}}</td>
     </tr>
+  {{/if}}
   {{else}}
     <tr><td><small><i>Nothing yet</i></small><td></tr>
   {{/each}}
@@ -41,15 +43,17 @@
 <div class="panel panel-default">
   <div class="panel-heading"><h3 class="panel-title">Coming up next...</h3></div>
   <table class="table">
-  {{#each next as |sessions room|}}
+  {{#each rooms as |room| }}
+  {{#if (lookup @root.next room) }}
   <tr>
     <td class="col-sm-1"><span class="label label-primary {{room}}">{{room}}</span></td>
     <td>
-    {{#each sessions}}
-      {{#hashtag}}{{this}}{{/hashtag}}<br/>
-    {{/each}}
+      {{#each (lookup @root.next room) as |item|}}
+      {{#hashtag}}{{item}}{{/hashtag}} <br/>
+      {{/each}}
     </td>
   </tr>
+  {{/if}}
   {{else}}
     <tr><td><small><i>Nothing yet</i></small><td></tr>
   {{/each}}

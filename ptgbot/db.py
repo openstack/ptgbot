@@ -91,5 +91,6 @@ class PTGDataBase():
             self.data['ethercalc'] = self.ethercalc.load()
         timestamp = datetime.datetime.now()
         self.data['timestamp'] = '{:%Y-%m-%d %H:%M:%S}'.format(timestamp)
+        self.data['rooms'] = sorted(self.data['rooms'])
         with open(self.filename, 'w') as fp:
             json.dump(self.data, fp)

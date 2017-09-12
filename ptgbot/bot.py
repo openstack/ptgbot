@@ -90,7 +90,8 @@ class PTGBot(irc.bot.SingleServerIRCBot):
 
     def usage(self, channel):
         self.send(channel,
-                  "Format is '#ROOMNAME [ now ... | next ... | clean ]'")
+                  "Format is '#ROOMNAME [ now ... | next ... "
+                  "| location ... | clean ]'")
 
     def send_room_list(self, channel):
         rooms = self.data.list_rooms()

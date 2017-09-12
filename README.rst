@@ -48,6 +48,7 @@ Example::
   #swift next at 3pm we plan to cover cold storage features
   ...
   #oslo now discussing oslo.config drivers
+  #oslo location Level B, Ballroom A
   #oslo color #42f4c5
   #oslo next after lunch we plan to discuss auto-generating config reference docs
 

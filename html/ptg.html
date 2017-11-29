@@ -18,8 +18,8 @@
 
 <script id="PTGtemplate" type="text/x-handlebars-template">
 <style>
-{{#each colors as |color room|}}
-.{{room}} {
+{{#each colors as |color track|}}
+.{{track}} {
     background-color: {{color}};
 }
 {{/each}}
@@ -27,12 +27,12 @@
 <div class="panel panel-default">
   <div class="panel-heading"><h3 class="panel-title">Currently playing...</h3></div>
   <table class="table">
-  {{#each rooms as |room| }}
-  {{#if (lookup @root.now room) }}
+  {{#each tracks as |track| }}
+  {{#if (lookup @root.now track) }}
     <tr>
-      <td class="col-sm-1"><span class="label label-primary {{room}}">{{room}}</span></td>
-      <td>{{#hashtag}}{{lookup @root.now room}}{{/hashtag}}</td>
-      <td>{{lookup @root.location room}}</td>
+      <td class="col-sm-1"><span class="label label-primary {{track}}">{{track}}</span></td>
+      <td>{{#hashtag}}{{lookup @root.now track}}{{/hashtag}}</td>
+      <td>{{lookup @root.location track}}</td>
     </tr>
   {{/if}}
   {{else}}
@@ -43,12 +43,12 @@
 <div class="panel panel-default">
   <div class="panel-heading"><h3 class="panel-title">Coming up next...</h3></div>
   <table class="table">
-  {{#each rooms as |room| }}
-  {{#if (lookup @root.next room) }}
+  {{#each tracks as |track| }}
+  {{#if (lookup @root.next track) }}
   <tr>
-    <td class="col-sm-1"><span class="label label-primary {{room}}">{{room}}</span></td>
+    <td class="col-sm-1"><span class="label label-primary {{track}}">{{track}}</span></td>
     <td>
-      {{#each (lookup @root.next room) as |item|}}
+      {{#each (lookup @root.next track) as |item|}}
       {{#hashtag}}{{item}}{{/hashtag}} <br/>
       {{/each}}
     </td>
@@ -59,7 +59,7 @@
   {{/each}}
   </table>
 </div>
-<p class="text-muted">Content on this page is being driven by room operators through the openstackptg bot on the #openstack-ptg IRC channel. It was last refreshed on {{timestamp}}.</p>
+<p class="text-muted">Content on this page is being driven by track moderators through the openstackptg bot on the #openstack-ptg IRC channel. It was last refreshed on {{timestamp}}.</p>
 
 </script>
 

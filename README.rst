@@ -2,8 +2,8 @@
 OpenStack PTG Bot
 =================
 
-ptgbot is the bot that PTG room moderators use to surface what's
-currently happening at the event. Room operators send messages to
+ptgbot is the bot that PTG track moderators use to surface what's
+currently happening at the event. Track moderators send messages to
 the bot, like::
 
   #swift now discussing ring balancing
@@ -12,26 +12,26 @@ and from that information the bot builds a static webpage with discussion
 topics currently discussed ("now") and an indicative set of discussion
 topics coming up next ("next").
 
-Room operators commands
-=======================
+Track moderators commands
+=========================
 
 You have to have voice in the channel (+v) to send commands to the ptgbot.
 Commands follow the following format::
 
-  #ROOMNAME [now|next] TOPIC
-  #ROOMNAME [color] CSS_COLOR_SPECIFIER
+  #TRACK [now|next] TOPIC
+  #TRACK [color] CSS_COLOR_SPECIFIER
 
 Please note that:
 
-* There can only be one "now" topic at a time. If multiple topics are
-  discussed at the same time in various corners of the room, they should
-  all be specified in a single "now" command.
+* There can only be one "now" discussion topic at a time. If multiple
+  topics are discussed at the same time in various corners of the room,
+  they should all be specified in a single "now" command.
 
 * In order to ensure that information is current, entering a "now" command
-  wipes out any "next" entry for the same room. You might want to refresh
+  wipes out any "next" entry for the same topic. You might want to refresh
   those after entering a "now" topic.
 
-* The color command only sets the background color for the room
+* The color command only sets the background color for the track
   name. The foreground is always white. Colors can be specified in any
   form supported by the CSS attribute background-color.
 
@@ -50,10 +50,10 @@ Example::
   #oslo color #42f4c5
   #oslo next after lunch we plan to discuss auto-generating config reference docs
 
-You can also remove all entries related to your room by issuing the following
+You can also remove all entries related to your track by issuing the following
 command::
 
-  #ROOMNAME clean
+  #TRACK clean
 
 
 Admin commands
@@ -62,19 +62,19 @@ Admin commands
 You have to be a channel operator (+o) to use admin commands.
 
 ~list
-  List available room names
+  List available track names
 
-~add ROOM [ROOM..]
-  Add new room name(s)
+~add TRACK [TRACK..]
+  Add new track(s)
 
-~del ROOM [ROOM..]
-  Deletes room name(s)
+~del TRACK [TRACK..]
+  Deletes track(s)
 
-~clean ROOM [ROOM..]
-  Removes active entries for specified room(s)
+~clean TRACK [TRACK..]
+  Removes active entries for specified track(s)
 
 ~wipe
-  Resets the database entirely (removes all defined rooms and entries)
+  Resets the database entirely (removes all defined tracks and topics)
 
 
 Local testing
@@ -98,8 +98,9 @@ In one terminal, run the bot::
 
   tox -evenv -- ptgbot -d config.json
 
-Join that channel and give a command to the bot::
+Join that channel and give commands to the bot::
 
+  ~add swift
   #swift now discussing ring placement
 
 (note, the bot currently only takes commands from Freenode identified users)

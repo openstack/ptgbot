@@ -89,15 +89,15 @@ class PTGBot(irc.bot.SingleServerIRCBot):
 
     def usage(self, channel):
         self.send(channel,
-                  "Format is '#ROOMNAME [ now ... | next ... "
+                  "Format is '#TRACK [ now ... | next ... "
                   "| location ... | clean ]'")
 
-    def send_room_list(self, channel):
-        rooms = self.data.list_rooms()
-        if rooms:
-            self.send(channel, "Active rooms: %s" % str.join(' ', rooms))
+    def send_track_list(self, channel):
+        tracks = self.data.list_tracks()
+        if tracks:
+            self.send(channel, "Active tracks: %s" % str.join(' ', tracks))
         else:
-            self.send(channel, "There are no active rooms defined yet")
+            self.send(channel, "There are no active tracks defined yet")
 
     def on_pubmsg(self, c, e):
         if not self.identify_msg_cap:
@@ -121,24 +121,24 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                 self.usage(chan)
                 return
 
-            room = words[0][1:].lower()
-            if not self.data.is_room_valid(room):
-                self.send(chan, "%s: unknown room '%s'" % (nick, room))
-                self.send_room_list(chan)
+            track = words[0][1:].lower()
+            if not self.data.is_track_valid(track):
+                self.send(chan, "%s: unknown track '%s'" % (nick, track))
+                self.send_track_list(chan)
                 return
 
             adverb = words[1].lower()
             session = str.join(' ', words[2:])
             if adverb == 'now':
-                self.data.add_now(room, session)
+                self.data.add_now(track, session)
             elif adverb == 'next':
-                self.data.add_next(room, session)
+                self.data.add_next(track, session)
             elif adverb == 'clean':
-                self.data.clean_rooms([room])
+                self.data.clean_tracks([track])
             elif adverb == 'color':
-                self.data.add_color(room, session)
+                self.data.add_color(track, session)
             elif adverb == 'location':
-                self.data.add_location(room, session)
+                self.data.add_location(track, session)
             else:
                 self.send(chan, "%s: unknown directive '%s'" % (nick, adverb))
                 self.usage(chan)
@@ -153,13 +153,13 @@ class PTGBot(irc.bot.SingleServerIRCBot):
             if command == 'wipe':
                 self.data.wipe()
             elif command == 'list':
-                self.send_room_list(chan)
+                self.send_track_list(chan)
                 return
             elif command in ('clean', 'add', 'del'):
                 if len(words) < 2:
                     self.send(chan, "this command takes one or more arguments")
                     return
-                getattr(self.data, command + '_rooms')(words[1:])
+                getattr(self.data, command + '_tracks')(words[1:])
             else:
                 self.send(chan, "%s: unknown command '%s'" % (nick, command))
                 return

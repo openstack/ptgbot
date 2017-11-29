@@ -21,7 +21,7 @@ import datetime
 
 class PTGDataBase():
 
-    BASE = {'rooms': [], 'now': {}, 'next': {}, 'colors': {},
+    BASE = {'tracks': [], 'now': {}, 'next': {}, 'colors': {},
             'location': {}}
 
     def __init__(self, filename):
@@ -33,52 +33,52 @@ class PTGDataBase():
             self.data = self.BASE
         self.save()
 
-    def add_now(self, room, session):
-        self.data['now'][room] = session
-        if room in self.data['next']:
-            del self.data['next'][room]
+    def add_now(self, track, session):
+        self.data['now'][track] = session
+        if track in self.data['next']:
+            del self.data['next'][track]
         self.save()
 
-    def add_color(self, room, color):
-        self.data['colors'][room] = color
+    def add_color(self, track, color):
+        self.data['colors'][track] = color
         self.save()
 
-    def add_location(self, room, location):
+    def add_location(self, track, location):
         if 'location' not in self.data:
             self.data['location'] = {}
-        self.data['location'][room] = location
+        self.data['location'][track] = location
         self.save()
 
-    def add_next(self, room, session):
-        if room not in self.data['next']:
-            self.data['next'][room] = []
-        self.data['next'][room].append(session)
+    def add_next(self, track, session):
+        if track not in self.data['next']:
+            self.data['next'][track] = []
+        self.data['next'][track].append(session)
         self.save()
 
-    def is_room_valid(self, room):
-        return room in self.data['rooms']
+    def is_track_valid(self, track):
+        return track in self.data['tracks']
 
-    def list_rooms(self):
-        return sorted(self.data['rooms'])
+    def list_tracks(self):
+        return sorted(self.data['tracks'])
 
-    def add_rooms(self, rooms):
-        for room in rooms:
-            if room not in self.data['rooms']:
-                self.data['rooms'].append(room)
+    def add_tracks(self, tracks):
+        for track in tracks:
+            if track not in self.data['tracks']:
+                self.data['tracks'].append(track)
         self.save()
 
-    def del_rooms(self, rooms):
-        for room in rooms:
-            if room in self.data['rooms']:
-                self.data['rooms'].remove(room)
+    def del_tracks(self, tracks):
+        for track in tracks:
+            if track in self.data['tracks']:
+                self.data['tracks'].remove(track)
         self.save()
 
-    def clean_rooms(self, rooms):
-        for room in rooms:
-            if room in self.data['now']:
-                del self.data['now'][room]
-            if room in self.data['next']:
-                del self.data['next'][room]
+    def clean_tracks(self, tracks):
+        for track in tracks:
+            if track in self.data['now']:
+                del self.data['now'][track]
+            if track in self.data['next']:
+                del self.data['next'][track]
         self.save()
 
     def wipe(self):
@@ -88,6 +88,6 @@ class PTGDataBase():
     def save(self):
         timestamp = datetime.datetime.now()
         self.data['timestamp'] = '{:%Y-%m-%d %H:%M:%S}'.format(timestamp)
-        self.data['rooms'] = sorted(self.data['rooms'])
+        self.data['tracks'] = sorted(self.data['tracks'])
         with open(self.filename, 'w') as fp:
             json.dump(self.data, fp)

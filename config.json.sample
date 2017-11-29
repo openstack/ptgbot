@@ -4,5 +4,27 @@
   "irc_server": "irc.freenode.net",
   "irc_port": 6667,
   "irc_channel": "#CHANNEL",
-  "db_filename": "html/ptg.json"
+  "db_filename": "html/ptg.json",
+  "slots": {
+    "Monday": [
+      {
+        "name": "MonAM",
+        "desc": "09:00-12:00"
+      },
+      {
+        "name": "MonPM",
+        "desc": "14:00-17:00"
+      }
+    ],
+    "Tuesday": [
+      {
+        "name": "TueAM",
+        "desc": "09:00-12:00"
+      },
+      {
+        "name": "TuePM",
+        "desc": "14:00-17:00"
+      }
+    ]
+  }
 }

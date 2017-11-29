@@ -16,6 +16,7 @@
 # limitations under the License.
 
 import argparse
+import collections
 import daemon
 import irc.bot
 import json
@@ -171,7 +172,7 @@ class PTGBot(irc.bot.SingleServerIRCBot):
 
 def start(configpath):
     with open(configpath, 'r') as fp:
-        config = json.load(fp)
+        config = json.load(fp, object_pairs_hook=collections.OrderedDict)
 
     if 'log_config' in config:
         log_config = config['log_config']
@@ -182,7 +183,7 @@ def start(configpath):
     else:
         logging.basicConfig(level=logging.DEBUG)
 
-    db = ptgbot.db.PTGDataBase(config['db_filename'])
+    db = ptgbot.db.PTGDataBase(config['db_filename'], config['slots'])
 
     bot = PTGBot(config['irc_nick'],
                  config.get('irc_pass', ''),

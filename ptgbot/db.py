@@ -21,16 +21,17 @@ import datetime
 
 class PTGDataBase():
 
-    BASE = {'tracks': [], 'now': {}, 'next': {}, 'colors': {},
+    BASE = {'tracks': [], 'slots': {}, 'now': {}, 'next': {}, 'colors': {},
             'location': {}}
 
-    def __init__(self, filename):
+    def __init__(self, filename, slots):
         self.filename = filename
         if os.path.isfile(filename):
             with open(filename, 'r') as fp:
                 self.data = json.load(fp)
         else:
             self.data = self.BASE
+        self.data['slots'] = slots
         self.save()
 
     def add_now(self, track, session):

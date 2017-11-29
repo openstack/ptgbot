@@ -21,12 +21,11 @@ import datetime
 
 class PTGDataBase():
 
-    BASE = {'rooms': [], 'ethercalc': [], 'now': {}, 'next': {}, 'colors': {},
+    BASE = {'rooms': [], 'now': {}, 'next': {}, 'colors': {},
             'location': {}}
 
-    def __init__(self, filename, ethercalc):
+    def __init__(self, filename):
         self.filename = filename
-        self.ethercalc = ethercalc
         if os.path.isfile(filename):
             with open(filename, 'r') as fp:
                 self.data = json.load(fp)
@@ -87,8 +86,6 @@ class PTGDataBase():
         self.save()
 
     def save(self):
-        if self.ethercalc:
-            self.data['ethercalc'] = self.ethercalc.load()
         timestamp = datetime.datetime.now()
         self.data['timestamp'] = '{:%Y-%m-%d %H:%M:%S}'.format(timestamp)
         self.data['rooms'] = sorted(self.data['rooms'])

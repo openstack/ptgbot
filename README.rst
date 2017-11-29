@@ -10,9 +10,7 @@ the bot, like::
 
 and from that information the bot builds a static webpage with discussion
 topics currently discussed ("now") and an indicative set of discussion
-topics coming up next ("next"). It also merges information from the
-reservable rooms ethercalc in order to produce a single, static,
-mobile-friendly page.
+topics coming up next ("next").
 
 Room operators commands
 =======================

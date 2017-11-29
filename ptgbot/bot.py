@@ -25,7 +25,6 @@ import time
 import ssl
 
 import ptgbot.db
-import ptgbot.ethercalc
 
 try:
     import daemon.pidlockfile as pid_file_module
@@ -183,14 +182,7 @@ def start(configpath):
     else:
         logging.basicConfig(level=logging.DEBUG)
 
-    if 'ethercalc_url' in config:
-        ethercalc = ptgbot.ethercalc.Ethercalc(
-            config['ethercalc_url'],
-            config.get('ethercalc_cells'))
-    else:
-        ethercalc = None
-
-    db = ptgbot.db.PTGDataBase(config['db_filename'], ethercalc)
+    db = ptgbot.db.PTGDataBase(config['db_filename'])
 
     bot = PTGBot(config['irc_nick'],
                  config.get('irc_pass', ''),

@@ -1,3 +1,2 @@
 irc
 python-daemon
-requests

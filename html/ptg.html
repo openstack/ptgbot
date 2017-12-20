@@ -25,7 +25,7 @@
 {{/each}}
 </style>
 <div class="panel panel-default">
-  <div class="panel-heading"><h3 class="panel-title">Currently playing...</h3></div>
+  <div class="panel-heading"><h3 class="panel-title">Current discussion topics</h3></div>
   <table class="table">
   {{#each tracks as |track| }}
   {{#if (lookup @root.now track) }}
@@ -59,13 +59,74 @@
   {{/each}}
   </table>
 </div>
-<p class="text-muted">Content on this page is being driven by track moderators through the openstackptg bot on the #openstack-ptg IRC channel. It was last refreshed on {{timestamp}}.</p>
-
+<div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">Scheduled tracks</h3></div>
+  <div class="panel-body">
+   <ul class="nav nav-tabs" role="tablist">
+   {{#each slots as |times day|}}
+    <li role="presentation"><a id='st{{day}}' href="#s{{day}}" aria-controls="s{{day}}" role="tab" data-toggle="tab">{{day}}</a></li>
+   {{/each}}
+   </ul>
+   <!-- Tab panes -->
+   <div class="tab-content">
+   {{#each slots as |times day|}}
+    <div role="tabpanel" class="tab-pane" id="s{{day}}">
+     <table class="table table-condensed">
+      <thead><tr><th></th>
+      {{#each times as |time|}}
+        <th>{{time.desc}}</th>
+      {{/each}}
+      </tr></thead>
+     {{#each @root.scheduled as |schedule room|}}
+     <tr><td>{{room}}</td>
+      {{#each (lookup @root.slots day) as |time|}}
+      <td><span class="label label-primary {{lookup schedule time.name}}">{{lookup schedule time.name}}</td>
+      {{/each}}
+     </tr>
+     {{/each}}
+     </table>
+    </div>
+   {{/each}}
+   </div>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">Additional tracks</h3></div>
+  <div class="panel-body">
+   <ul class="nav nav-tabs" role="tablist">
+   {{#each slots as |times day|}}
+    <li role="presentation"><a id='at{{day}}' href="#a{{day}}" aria-controls="a{{day}}" role="tab" data-toggle="tab">{{day}}</a></li>
+   {{/each}}
+   </ul>
+   <!-- Tab panes -->
+   <div class="tab-content">
+   {{#each slots as |times day|}}
+    <div role="tabpanel" class="tab-pane" id="a{{day}}">
+     <table class="table table-condensed">
+      <thead><tr><th></th>
+      {{#each times as |time|}}
+        <th>{{time.desc}}</th>
+      {{/each}}
+      </tr></thead>
+     {{#each @root.additional as |schedule room|}}
+     <tr><td>{{room}}</td>
+      {{#each (lookup @root.slots day) as |time|}}
+      <td><span class="label label-primary {{lookup schedule time.name}}">{{lookup schedule time.name}}</td>
+      {{/each}}
+     </tr>
+     {{/each}}
+     </table>
+    </div>
+   {{/each}}
+   </div>
+  </div>
+</div>
+<p class="text-muted">Content on this page is being driven by room operators through the openstackptg bot on the #openstack-ptg IRC channel. It was last refreshed on {{timestamp}}.</p>
 </script>
 
 <script src="jquery-1.9.1.min.js"></script>
 <script src="handlebars-4.0.6.js"></script>
+<script src="bootstrap-3.3.7.min.js"></script>
 <script src="ptg.js"></script>
-
 </body>
 </html>

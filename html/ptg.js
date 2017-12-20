@@ -21,4 +21,6 @@ Handlebars.registerHelper('hashtag', function(options) {
 $.getJSON("ptg.json", function(json) {
   console.log(json);
   document.getElementById("PTGsessions").innerHTML = template(json);
+  $('#stMonday').tab('show');
+  $('#atMonday').tab('show');
 });

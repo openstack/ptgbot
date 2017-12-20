@@ -183,7 +183,10 @@ def start(configpath):
     else:
         logging.basicConfig(level=logging.DEBUG)
 
-    db = ptgbot.db.PTGDataBase(config['db_filename'], config['slots'])
+    db = ptgbot.db.PTGDataBase(config['db_filename'],
+                               config['slots'],
+                               config['scheduled'],
+                               config['extrarooms'])
 
     bot = PTGBot(config['irc_nick'],
                  config.get('irc_pass', ''),

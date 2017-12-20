@@ -26,5 +26,22 @@
         "desc": "14:00-17:00"
       }
     ]
+  },
+  "scheduled": {
+    "Ontario": {
+      "MonAM": "swift",
+      "MonPM": "swift",
+      "TueAM": "swift",
+      "TuePM": "swift"
+    },
+    "Montana": {
+      "MonAM": "cinder",
+      "MonPM": "cinder",
+      "TueAM": "cinder",
+      "TuePM": "cinder"
+    }
+  },
+  "extrarooms": {
+    "Missouri": ["MonAM", "MonPM", "TueAM", "TuePM"]
   }
 }

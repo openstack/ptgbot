@@ -22,9 +22,9 @@ import datetime
 class PTGDataBase():
 
     BASE = {'tracks': [], 'slots': {}, 'now': {}, 'next': {}, 'colors': {},
-            'location': {}}
+            'location': {}, 'scheduled': {}, 'additional': {}}
 
-    def __init__(self, filename, slots):
+    def __init__(self, filename, slots, scheduled, extrarooms):
         self.filename = filename
         if os.path.isfile(filename):
             with open(filename, 'r') as fp:
@@ -32,6 +32,28 @@ class PTGDataBase():
         else:
             self.data = self.BASE
         self.data['slots'] = slots
+
+        self.data['scheduled'] = scheduled
+        # Add tracks mentioned in configuration that are not in track list
+        for room, bookings in scheduled.items():
+            for time, track in bookings.items():
+                if track not in self.data['tracks']:
+                    self.data['tracks'].append(track)
+
+        # Rebuild 'additional' with rooms and slots from configuration, but
+        # use saved data where the room/slot is preserved
+        old_data = self.data['additional'].copy()
+        self.data['additional'] = {}
+
+        for room in extrarooms.keys():
+            self.data['additional'][room] = {}
+            for slot in extrarooms[room]:
+                try:
+                    self.data['additional'][room][slot] = old_data[room][slot]
+                except KeyError:
+                    self.data['additional'][room][slot] = ''
+
+        # Save the data to disk
         self.save()
 
     def add_now(self, track, session):

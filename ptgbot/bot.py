@@ -129,17 +129,24 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                 return
 
             adverb = words[1].lower()
-            session = str.join(' ', words[2:])
+            params = str.join(' ', words[2:])
             if adverb == 'now':
-                self.data.add_now(track, session)
+                self.data.add_now(track, params)
             elif adverb == 'next':
-                self.data.add_next(track, session)
+                self.data.add_next(track, params)
             elif adverb == 'clean':
                 self.data.clean_tracks([track])
             elif adverb == 'color':
-                self.data.add_color(track, session)
+                self.data.add_color(track, params)
             elif adverb == 'location':
-                self.data.add_location(track, session)
+                self.data.add_location(track, params)
+            elif adverb == 'book':
+                room, timeslot = params.split('-')
+                if self.data.is_slot_valid_and_empty(room, timeslot):
+                    self.data.book(track, room, timeslot)
+                else:
+                    self.send(chan, "%s: invalid slot reference '%s'" %
+                              (nick, params))
             else:
                 self.send(chan, "%s: unknown directive '%s'" % (nick, adverb))
                 self.usage(chan)

@@ -19,7 +19,8 @@ You have to have voice in the channel (+v) to send commands to the ptgbot.
 Commands follow the following format::
 
   #TRACK [now|next] TOPIC
-  #TRACK [color] CSS_COLOR_SPECIFIER
+  #TRACK color CSS_COLOR_SPECIFIER
+  #TRACK book SLOT_REFERENCE
 
 Please note that:
 

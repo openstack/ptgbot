@@ -104,6 +104,16 @@ class PTGDataBase():
                 del self.data['next'][track]
         self.save()
 
+    def is_slot_valid_and_empty(self, room, timeslot):
+        try:
+            return not self.data['additional'][room][timeslot]
+        except KeyError:
+            return False
+
+    def book(self, track, room, timeslot):
+        self.data['additional'][room][timeslot] = track
+        self.save()
+
     def wipe(self):
         self.data = self.BASE
         self.save()

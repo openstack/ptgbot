@@ -18,9 +18,22 @@ Handlebars.registerHelper('hashtag', function(options) {
   return new Handlebars.SafeString(sentence);
 });
 
+// What is the day today ?
+var now = new Date();
+var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var day = days[ now.getDay() ];
+
 $.getJSON("ptg.json", function(json) {
-  console.log(json);
   document.getElementById("PTGsessions").innerHTML = template(json);
-  $('#stMonday').tab('show');
-  $('#atMonday').tab('show');
+  // if the current day doesn't exist, default to first existing one
+  if ($('#st'+day).length == 0) {
+      for (var i = 0; i < days.length; i++) {
+          if ($('#st'+days[i]).length) {
+              day = days[i];
+              break;
+          }
+      }
+  }
+  $('#st'+day).tab('show');
+  $('#at'+day).tab('show');
 });

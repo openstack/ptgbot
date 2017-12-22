@@ -128,6 +128,12 @@ class PTGDataBase():
         self.data['additional'][room][timeslot] = track
         self.save()
 
+    def new_day_cleanup(self):
+        self.data['now'] = {}
+        self.data['next'] = {}
+        self.data['location'] = {}
+        self.save()
+
     def wipe(self):
         self.data = self.BASE
         self.save()

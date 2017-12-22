@@ -74,6 +74,9 @@ You have to be a channel operator (+o) to use admin commands.
 ~clean TRACK [TRACK..]
   Removes active entries for specified track(s)
 
+~newday
+  Removes now/next/location entries, to be run at the start of a new day
+
 ~wipe
   Resets the database entirely (removes all defined tracks and topics)
 

@@ -160,9 +160,10 @@ class PTGBot(irc.bot.SingleServerIRCBot):
             command = words[0][1:].lower()
             if command == 'wipe':
                 self.data.wipe()
+            elif command == 'newday':
+                self.data.new_day_cleanup()
             elif command == 'list':
                 self.send_track_list(chan)
-                return
             elif command in ('clean', 'add', 'del'):
                 if len(words) < 2:
                     self.send(chan, "this command takes one or more arguments")

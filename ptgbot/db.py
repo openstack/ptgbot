@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import calendar
+from itertools import chain
 import json
 import os
 import datetime
@@ -73,9 +74,14 @@ class PTGDataBase():
 
     def get_track_room(self, track):
         # This simplified version returns the first room the track is
-        # scheduled in for the day
+        # scheduled in for the day. If the event does not run on this
+        # day, pick the first day.
         today = calendar.day_name[datetime.date.today().weekday()]
-        for room, bookings in self.data['scheduled'].items():
+        if today not in self.data['slots']:
+            today = next(iter(self.data['slots']))
+        all_schedule = chain(self.data['scheduled'].items(),
+                             self.data['additional'].items())
+        for room, bookings in all_schedule:
             for btime, btrack in bookings.items():
                 for slot in self.data['slots'].get(today, []):
                     if btrack == track and btime == slot['name']:

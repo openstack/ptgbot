@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import calendar
 import json
 import os
 import datetime
@@ -58,6 +59,10 @@ class PTGDataBase():
 
     def add_now(self, track, session):
         self.data['now'][track] = session
+        # Update location if none manually provided yet
+        room = self.get_track_room(track)
+        if room and track not in self.data['location']:
+            self.add_location(track, room)
         if track in self.data['next']:
             del self.data['next'][track]
         self.save()
@@ -66,9 +71,18 @@ class PTGDataBase():
         self.data['colors'][track] = color
         self.save()
 
+    def get_track_room(self, track):
+        # This simplified version returns the first room the track is
+        # scheduled in for the day
+        today = calendar.day_name[datetime.date.today().weekday()]
+        for room, bookings in self.data['scheduled'].items():
+            for btime, btrack in bookings.items():
+                for slot in self.data['slots'].get(today, []):
+                    if btrack == track and btime == slot['name']:
+                        return room
+        return None
+
     def add_location(self, track, location):
-        if 'location' not in self.data:
-            self.data['location'] = {}
         self.data['location'][track] = location
         self.save()
 

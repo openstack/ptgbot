@@ -39,6 +39,7 @@ except ImportError:
 # ^ This is why pep8 is a bad idea.
 irc.client.ServerConnection.buffer_class.errors = 'replace'
 ANTI_FLOOD_SLEEP = 2
+DOC_URL = 'https://git.openstack.org/cgit/openstack/ptgbot/tree/README.rst'
 
 
 class PTGBot(irc.bot.SingleServerIRCBot):
@@ -89,9 +90,8 @@ class PTGBot(irc.bot.SingleServerIRCBot):
             self.identify_msg_cap = True
 
     def usage(self, channel):
-        self.send(channel,
-                  "Format is '#TRACK [ now ... | next ... "
-                  "| location ... | clean ]'")
+        self.send(channel, "Format is '#TRACK COMMAND [PARAMETERS]'")
+        self.send(channel, "See doc at: " + DOC_URL)
 
     def send_track_list(self, channel):
         tracks = self.data.list_tracks()

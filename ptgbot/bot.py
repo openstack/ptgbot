@@ -130,6 +130,11 @@ class PTGBot(irc.bot.SingleServerIRCBot):
 
             adverb = words[1].lower()
             params = str.join(' ', words[2:])
+            if adverb in ['now', 'next', 'location']:
+                if not self.data.get_track_room(track):
+                    self.send(chan, "%s: track '%s' is not scheduled today" %
+                              (nick, track))
+                    return
             if adverb == 'now':
                 self.data.add_now(track, params)
             elif adverb == 'next':

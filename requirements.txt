@@ -1,2 +1,3 @@
 irc
 python-daemon
+ib3

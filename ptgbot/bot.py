@@ -16,12 +16,13 @@
 import argparse
 import collections
 import daemon
+from ib3.auth import SASL
+from ib3.connection import SSL
 import irc.bot
 import json
 import logging.config
 import os
 import time
-import ssl
 import textwrap
 
 import ptgbot.db
@@ -46,52 +47,21 @@ ANTI_FLOOD_SLEEP = 2
 DOC_URL = 'https://git.openstack.org/cgit/openstack/ptgbot/tree/README.rst'
 
 
-class PTGBot(irc.bot.SingleServerIRCBot):
+class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
     log = logging.getLogger("ptgbot.bot")
 
     def __init__(self, nickname, password, server, port, channel, db):
-        if port == 6697:
-            factory = irc.connection.Factory(wrapper=ssl.wrap_socket)
-            irc.bot.SingleServerIRCBot.__init__(self,
-                                                [(server, port)],
-                                                nickname, nickname,
-                                                connect_factory=factory)
-        else:
-            irc.bot.SingleServerIRCBot.__init__(self,
-                                                [(server, port)],
-                                                nickname, nickname)
+        super(PTGBot, self).__init__(
+            server_list=[(server, port)],
+            nickname=nickname,
+            realname=nickname,
+            ident_password=password,
+            channels=[channel])
         self.nickname = nickname
         self.password = password
         self.channel = channel
         self.identify_msg_cap = False
         self.data = db
-
-    def on_nicknameinuse(self, c, e):
-        self.log.debug("Nickname in use, releasing")
-        c.nick(c.get_nickname() + "_")
-        c.privmsg("nickserv", "identify %s " % self.password)
-        c.privmsg("nickserv", "ghost %s %s" % (self.nickname, self.password))
-        c.privmsg("nickserv", "release %s %s" % (self.nickname, self.password))
-        time.sleep(ANTI_FLOOD_SLEEP)
-        c.nick(self.nickname)
-
-    def on_welcome(self, c, e):
-        self.identify_msg_cap = False
-        self.log.debug("Requesting identify-msg capability")
-        c.cap('REQ', 'identify-msg')
-        c.cap('END')
-        if (self.password):
-            self.log.debug("Identifying to nickserv")
-            c.privmsg("nickserv", "identify %s " % self.password)
-        self.log.info("Joining %s" % self.channel)
-        c.join(self.channel)
-        time.sleep(ANTI_FLOOD_SLEEP)
-
-    def on_cap(self, c, e):
-        self.log.debug("Received cap response %s" % repr(e.arguments))
-        if e.arguments[0] == 'ACK' and 'identify-msg' in e.arguments[1]:
-            self.log.debug("identify-msg cap acked")
-            self.identify_msg_cap = True
 
     def usage(self, channel):
         self.send(channel, "Format is '#TRACK COMMAND [PARAMETERS]'")

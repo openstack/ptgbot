@@ -18,6 +18,13 @@ Handlebars.registerHelper('hashtag', function(options) {
   return new Handlebars.SafeString(sentence);
 });
 
+Handlebars.registerHelper('roomcode', function(schedule, room, timecode) {
+  if (schedule[timecode] == "") {
+    return room + "-" + timecode;
+  }
+  return "";
+});
+
 // What is the day today ?
 var now = new Date();
 var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];

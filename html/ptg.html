@@ -114,7 +114,7 @@
       {{#if (lookup schedule time.name)}}
       <td><span class="label label-primary {{lookup schedule time.name}}">{{lookup schedule time.name}}</td>
       {{else}}
-      <td><small><i>{{room}}-{{time.name}}</i></small></td>
+      <td><small><i>{{roomcode schedule room time.name}}</i></small></td>
       {{/if}}
       {{/each}}
      </tr>

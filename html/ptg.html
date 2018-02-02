@@ -109,6 +109,7 @@
       {{/each}}
       </tr></thead>
      {{#each @root.additional as |schedule room|}}
+     {{#if (roomactive schedule times)}}
      <tr><td>{{room}}</td>
       {{#each (lookup @root.slots day) as |time|}}
       {{#if (lookup schedule time.name)}}
@@ -118,6 +119,7 @@
       {{/if}}
       {{/each}}
      </tr>
+     {{/if}}
      {{/each}}
      </table>
     </div>

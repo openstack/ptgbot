@@ -18,6 +18,15 @@ Handlebars.registerHelper('hashtag', function(options) {
   return new Handlebars.SafeString(sentence);
 });
 
+Handlebars.registerHelper('roomactive', function(schedule, times) {
+  for (var i=0; i<times.length; i++) {
+    if (schedule[times[i]['name']] != undefined) {
+      return true;
+    }
+  }
+  return false;
+});
+
 Handlebars.registerHelper('roomcode', function(schedule, room, timecode) {
   if (schedule[timecode] == "") {
     return room + "-" + timecode;

@@ -15,10 +15,11 @@
 # limitations under the License.
 
 import calendar
+import datetime
 from itertools import chain
 import json
 import os
-import datetime
+import random
 
 
 class PTGDataBase():
@@ -41,6 +42,20 @@ class PTGDataBase():
             for time, track in bookings.items():
                 if track not in self.data['tracks']:
                     self.data['tracks'].append(track)
+                    self.data['colors'][track] = random.choice([
+                        '#596468',
+                        '#9ea8ad',
+                        '#b57506',
+                        '#f8ac29',
+                        '#5b731a',
+                        '#9dc62d',
+                        '#156489',
+                        '#27a3dd',
+                        '#2a6d3c',
+                        '#3fa45b',
+                        '#930a0a',
+                        '#dc0d0e',
+                    ])
 
         # Rebuild 'additional' with rooms and slots from configuration, but
         # use saved data where the room/slot is preserved

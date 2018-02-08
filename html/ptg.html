@@ -78,45 +78,10 @@
       {{/each}}
       </tr></thead>
      {{#each @root.scheduled as |schedule room|}}
+     {{#if (roomactive @root.scheduled @root.additional room times)}}
      <tr><td>{{room}}</td>
       {{#each (lookup @root.slots day) as |time|}}
-      <td><span class="label label-primary {{lookup schedule time.name}}">{{lookup schedule time.name}}</td>
-      {{/each}}
-     </tr>
-     {{/each}}
-     </table>
-    </div>
-   {{/each}}
-   </div>
-  </div>
-</div>
-<div class="panel panel-default">
-  <div class="panel-heading"><h3 class="panel-title">Additional tracks</h3></div>
-  <div class="panel-body">
-   <ul class="nav nav-tabs" role="tablist">
-   {{#each slots as |times day|}}
-    <li role="presentation"><a id='at{{day}}' href="#a{{day}}" aria-controls="a{{day}}" role="tab" data-toggle="tab">{{day}}</a></li>
-   {{/each}}
-   </ul>
-   <!-- Tab panes -->
-   <div class="tab-content">
-   {{#each slots as |times day|}}
-    <div role="tabpanel" class="tab-pane" id="a{{day}}">
-     <table class="table table-condensed">
-      <thead><tr><th></th>
-      {{#each times as |time|}}
-        <th>{{time.desc}}</th>
-      {{/each}}
-      </tr></thead>
-     {{#each @root.additional as |schedule room|}}
-     {{#if (roomactive schedule times)}}
-     <tr><td>{{room}}</td>
-      {{#each (lookup @root.slots day) as |time|}}
-      {{#if (lookup schedule time.name)}}
-      <td><span class="label label-primary {{lookup schedule time.name}}">{{lookup schedule time.name}}</td>
-      {{else}}
-      <td><small><i>{{roomcode schedule room time.name}}</i></small></td>
-      {{/if}}
+      <td>{{ roomcode @root.scheduled @root.additional room time.name }}</td>
       {{/each}}
      </tr>
      {{/if}}
@@ -125,7 +90,7 @@
     </div>
    {{/each}}
    </div>
-   <small><i>Use #TRACK book SLOTREF to book one of those empty slots</i></small></td>
+   <small><i>Use '#TRACK book SLOTREF' to book one of the empty slots with the ptgbot</i></small>
   </div>
 </div>
 <p class="text-muted">Content on this page is being driven by room operators through the openstackptg bot on the #openstack-ptg IRC channel. It was last refreshed on {{timestamp}}.</p>

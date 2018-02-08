@@ -18,20 +18,44 @@ Handlebars.registerHelper('hashtag', function(options) {
   return new Handlebars.SafeString(sentence);
 });
 
-Handlebars.registerHelper('roomactive', function(schedule, times) {
+Handlebars.registerHelper('roomactive',
+                          function(scheduled, additional, room, times) {
   for (var i=0; i<times.length; i++) {
-    if (schedule[times[i]['name']] != undefined) {
+    if (scheduled[room][times[i]] != "") {
       return true;
+    }
+    if (additional[room]) {
+      if (additional[room][times[i]['name']] != undefined) {
+        return true;
+      }
     }
   }
   return false;
 });
 
-Handlebars.registerHelper('roomcode', function(schedule, room, timecode) {
-  if (schedule[timecode] == "") {
-    return room + "-" + timecode;
+Handlebars.registerHelper('roomcode',
+                          function(scheduled, additional, room, timecode) {
+  var cell = '';
+  content = scheduled[room][timecode];
+  if ((content != undefined) && (content != '')) {
+    cell = '<span class="label label-primary ' + scheduled[room][timecode] +
+           '">' + scheduled[room][timecode];
+    return new Handlebars.SafeString(cell);
+  } else {
+    if (additional[room]) {
+      console.log(additional[room][timecode]);
+      if (additional[room][timecode] != undefined) {
+        if (additional[room][timecode] == "") {
+          cell = '<small><i>' + room + "-" + timecode + '</i></small>';
+        } else {
+          cell = '<span class="label label-primary ' +
+                 additional[room][timecode] +
+                 '">' + additional[room][timecode];
+        }
+      }
+    }
   }
-  return "";
+  return new Handlebars.SafeString(cell);
 });
 
 // What is the day today ?

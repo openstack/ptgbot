@@ -34,7 +34,7 @@ Handlebars.registerHelper('roomactive',
 });
 
 Handlebars.registerHelper('roomcode',
-                          function(scheduled, additional, room, timecode) {
+                          function(scheduled, additional, room, timecode, s) {
   var cell = '';
   content = scheduled[room][timecode];
   if ((content != undefined) && (content != '')) {
@@ -46,7 +46,11 @@ Handlebars.registerHelper('roomcode',
       console.log(additional[room][timecode]);
       if (additional[room][timecode] != undefined) {
         if (additional[room][timecode] == "") {
-          cell = '<small><i>' + room + "-" + timecode + '</i></small>';
+          if (s == 1) {
+            cell = '<small><i>Available for booking</i></small>';
+          } else {
+            cell = '<small><i>' + room + "-" + timecode + '</i></small>';
+          }
         } else {
           cell = '<span class="label label-primary ' +
                  additional[room][timecode] +

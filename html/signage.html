@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="60">
+  <title>OpenStack PTG tracks for today</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="bootstrap-3.3.7.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container">
+<div id="PTGsessions">
+</div>
+</div>
+
+<script id="PTGtemplate" type="text/x-handlebars-template">
+<style>
+{{#each colors as |color track|}}
+.{{track}} {
+    background-color: {{color}};
+}
+{{/each}}
+</style>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">OpenStack PTG tracks for today</a>
+    </div>
+    <div class="collapse navbar-collapse navbar-right" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+{{#each slots as |times day|}}
+  <li><a id='at{{day}}' href="#a{{day}}" aria-controls="a{{day}}" role="tab" data-toggle="tab">{{ day }}</a></li>
+{{/each}}
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Tab panes -->
+<div class="tab-content">
+{{#each slots as |times day|}}
+ <div role="tabpanel" class="tab-pane" id="a{{day}}">
+  <table class="table table-condensed table-striped table-bordered">
+   <thead><tr><th>Room</th>
+   {{#each times as |time|}}
+     <th>{{time.desc}}</th>
+   {{/each}}
+   </tr></thead>
+  {{#each @root.scheduled as |schedule room|}}
+  {{#if (roomactive @root.scheduled @root.additional room times)}}
+  <tr><td>{{room}}</td>
+   {{#each (lookup @root.slots day) as |time|}}
+   <td>{{ roomcode @root.scheduled @root.additional room time.name 1 }}</td>
+   {{/each}}
+  </tr>
+  {{/if}}
+  {{/each}}
+  </table>
+ </div>
+{{/each}}
+<center>
+See more information, including current topics of discussion in each room, at
+<a href=http://ptg.openstack.org/ptg.html>http://ptg.openstack.org/ptg.html</a>
+</center>
+</div>
+</script>
+
+<script src="jquery-1.9.1.min.js"></script>
+<script src="handlebars-4.0.6.js"></script>
+<script src="bootstrap-3.3.7.min.js"></script>
+<script src="ptg.js"></script>
+</body>
+</html>

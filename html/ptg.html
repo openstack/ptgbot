@@ -81,7 +81,7 @@
      {{#if (roomactive @root.scheduled @root.additional room times)}}
      <tr><td>{{room}}</td>
       {{#each (lookup @root.slots day) as |time|}}
-      <td>{{ roomcode @root.scheduled @root.additional room time.name }}</td>
+      <td>{{ roomcode @root.scheduled @root.additional room time.name 0 }}</td>
       {{/each}}
      </tr>
      {{/if}}

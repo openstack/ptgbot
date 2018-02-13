@@ -127,8 +127,8 @@ You have to be a channel operator (+o) to use admin commands.
 ~newday
   Removes now/next/location entries, to be run at the start of a new day
 
-~wipe
-  Resets the database entirely (removes all defined tracks and topics)
+~reload
+  Resets the database entirely (reloads from configuration)
 
 
 Local testing

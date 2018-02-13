@@ -26,7 +26,7 @@ import random
 class PTGDataBase():
 
     BASE = {'tracks': [], 'slots': {}, 'now': {}, 'next': {}, 'colors': {},
-            'location': {}, 'scheduled': {}, 'additional': {}}
+            'location': {}, 'scheduled': {}, 'additional': {}, 'voice': 0}
 
     def __init__(self, config):
         self.filename = config['db_filename']
@@ -165,6 +165,17 @@ class PTGDataBase():
         if room in self.data['additional'].keys():
             if timeslot in self.data['additional'][room].keys():
                 self.data['additional'][room][timeslot] = ""
+        self.save()
+
+    def is_voice_required(self):
+        return self.data['voice'] == 1
+
+    def require_voice(self):
+        self.data['voice'] = 1
+        self.save()
+
+    def allow_everyone(self):
+        self.data['voice'] = 0
         self.save()
 
     def new_day_cleanup(self):

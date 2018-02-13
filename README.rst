@@ -16,7 +16,10 @@ with several sections of information:
 Track moderators commands
 =========================
 
-You have to have voice in the channel (+v) to send commands to the ptgbot.
+By default the bot allows anyone in the channel to issue track moderation
+commands. However note that it is possible for admins to restrict access
+to people who have voice in the channel (+v).
+
 Commands follow the following format::
 
   #TRACKNAME COMMAND [PARAMETERS]
@@ -132,6 +135,12 @@ You have to be a channel operator (+o) to use admin commands.
 
 ~reload
   Resets the database entirely (reloads from configuration)
+
+~requirevoice
+  Requires that users are voiced (+v) to issue track moderation commands
+
+~alloweveryone
+  Allows everyone in the channel to issue track moderation commands
 
 
 Local testing

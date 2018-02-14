@@ -110,8 +110,9 @@ class PTGBot(irc.bot.SingleServerIRCBot):
         chan = e.target
 
         if msg.startswith('#'):
-            if not (self.channels[chan].is_voiced(nick) or
-                    self.channels[chan].is_oper(nick)):
+            if (self.data.is_voice_required() and not
+                    (self.channels[chan].is_voiced(nick) or
+                     self.channels[chan].is_oper(nick))):
                 self.send(chan, "%s: Need voice to issue commands" % (nick,))
                 return
 
@@ -171,6 +172,10 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                 self.data.unbook(room, timeslot)
             elif command == 'newday':
                 self.data.new_day_cleanup()
+            elif command == 'requirevoice':
+                self.data.require_voice()
+            elif command == 'alloweveryone':
+                self.data.allow_everyone()
             elif command == 'list':
                 self.send_track_list(chan)
             elif command in ('clean', 'add', 'del'):

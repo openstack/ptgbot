@@ -27,18 +27,36 @@ class PTGDataBase():
     BASE = {'tracks': [], 'slots': {}, 'now': {}, 'next': {}, 'colors': {},
             'location': {}, 'scheduled': {}, 'additional': {}}
 
-    def __init__(self, filename, slots, scheduled, extrarooms):
-        self.filename = filename
-        if os.path.isfile(filename):
-            with open(filename, 'r') as fp:
+    def __init__(self, config):
+        self.filename = config['db_filename']
+        self.slots = config['slots']
+        self.scheduled = config['scheduled']
+        self.extrarooms = config['extrarooms']
+
+        if os.path.isfile(self.filename):
+            with open(self.filename, 'r') as fp:
                 self.data = json.load(fp)
         else:
             self.data = self.BASE
-        self.data['slots'] = slots
 
-        self.data['scheduled'] = scheduled
+        old_data = self.data['additional'].copy()
+        self.load_data_from_config()
+        self.merge_additional(old_data)
+        self.save()
+
+    def load_data_from_config(self):
+        # Copy slots definition and scheduled rooms from configuration
+        self.data['slots'] = self.slots
+        self.data['scheduled'] = self.scheduled
+
+        # Create additional rooms dictionary from extrarooms definition
+        for room in self.extrarooms.keys():
+            self.data['additional'][room] = {}
+            for slot in self.extrarooms[room]:
+                self.data['additional'][room][slot] = ''
+
         # Add tracks mentioned in configuration that are not in track list
-        for room, bookings in scheduled.items():
+        for room, bookings in self.scheduled.items():
             for time, track in bookings.items():
                 if track not in self.data['tracks']:
                     self.data['tracks'].append(track)
@@ -57,21 +75,14 @@ class PTGDataBase():
                         '#dc0d0e',
                     ])
 
-        # Rebuild 'additional' with rooms and slots from configuration, but
-        # use saved data where the room/slot is preserved
-        old_data = self.data['additional'].copy()
-        self.data['additional'] = {}
-
-        for room in extrarooms.keys():
-            self.data['additional'][room] = {}
-            for slot in extrarooms[room]:
+    def merge_additional(self, old_data):
+        # Populate 'additional' with saved data where appropriate
+        for room in self.data['additional'].keys():
+            for slot in self.data['additional'][room].keys():
                 try:
                     self.data['additional'][room][slot] = old_data[room][slot]
                 except KeyError:
-                    self.data['additional'][room][slot] = ''
-
-        # Save the data to disk
-        self.save()
+                    pass
 
     def add_now(self, track, session):
         self.data['now'][track] = session

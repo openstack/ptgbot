@@ -43,7 +43,6 @@ Handlebars.registerHelper('roomcode',
     return new Handlebars.SafeString(cell);
   } else {
     if (additional[room]) {
-      console.log(additional[room][timecode]);
       if (additional[room][timecode] != undefined) {
         if (additional[room][timecode] == "") {
           if (s == 1) {

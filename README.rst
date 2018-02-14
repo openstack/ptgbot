@@ -124,6 +124,9 @@ You have to be a channel operator (+o) to use admin commands.
 ~clean TRACK [TRACK..]
   Removes active entries for specified track(s)
 
+~unbook SLOTCODE
+  Removes any booking at the slot named SLOTCODE
+
 ~newday
   Removes now/next/location entries, to be run at the start of a new day
 

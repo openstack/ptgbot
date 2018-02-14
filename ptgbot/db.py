@@ -161,6 +161,12 @@ class PTGDataBase():
         self.data['additional'][room][timeslot] = track
         self.save()
 
+    def unbook(self, room, timeslot):
+        if room in self.data['additional'].keys():
+            if timeslot in self.data['additional'][room].keys():
+                self.data['additional'][room][timeslot] = ""
+        self.save()
+
     def new_day_cleanup(self):
         self.data['now'] = {}
         self.data['next'] = {}

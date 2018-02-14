@@ -165,6 +165,10 @@ class PTGBot(irc.bot.SingleServerIRCBot):
             command = words[0][1:].lower()
             if command == 'reload':
                 self.data.reload()
+            elif command == 'unbook':
+                params = str.join(' ', words[1:])
+                room, timeslot = params.split('-')
+                self.data.unbook(room, timeslot)
             elif command == 'newday':
                 self.data.new_day_cleanup()
             elif command == 'list':

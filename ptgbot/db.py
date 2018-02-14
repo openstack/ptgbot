@@ -167,8 +167,9 @@ class PTGDataBase():
         self.data['location'] = {}
         self.save()
 
-    def wipe(self):
+    def reload(self):
         self.data = copy.deepcopy(self.BASE)
+        self.load_data_from_config()
         self.save()
 
     def save(self):

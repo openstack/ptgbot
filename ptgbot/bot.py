@@ -163,8 +163,8 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                 return
             words = msg.split()
             command = words[0][1:].lower()
-            if command == 'wipe':
-                self.data.wipe()
+            if command == 'reload':
+                self.data.reload()
             elif command == 'newday':
                 self.data.new_day_cleanup()
             elif command == 'list':

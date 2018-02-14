@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import calendar
+import copy
 import datetime
 from itertools import chain
 import json
@@ -37,9 +38,9 @@ class PTGDataBase():
             with open(self.filename, 'r') as fp:
                 self.data = json.load(fp)
         else:
-            self.data = self.BASE
+            self.data = copy.deepcopy(self.BASE)
 
-        old_data = self.data['additional'].copy()
+        old_data = copy.deepcopy(self.data['additional'])
         self.load_data_from_config()
         self.merge_additional(old_data)
         self.save()
@@ -167,7 +168,7 @@ class PTGDataBase():
         self.save()
 
     def wipe(self):
-        self.data = self.BASE
+        self.data = copy.deepcopy(self.BASE)
         self.save()
 
     def save(self):

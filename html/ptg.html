@@ -31,7 +31,7 @@
   {{#if (lookup @root.now track) }}
     <tr>
       <td class="col-sm-1"><span class="label label-primary {{track}}">{{track}}</span></td>
-      <td>{{#hashtag}}{{lookup @root.now track}}{{/hashtag}}</td>
+      <td>{{#trackContentLine}}{{lookup @root.now track}}{{/trackContentLine}}</td>
       <td>{{lookup @root.location track}}</td>
     </tr>
   {{/if}}
@@ -49,7 +49,7 @@
     <td class="col-sm-1"><span class="label label-primary {{track}}">{{track}}</span></td>
     <td>
       {{#each (lookup @root.next track) as |item|}}
-      {{#hashtag}}{{item}}{{/hashtag}} <br/>
+      {{#trackContentLine}}{{item}}{{/trackContentLine}} <br/>
       {{/each}}
     </td>
   </tr>

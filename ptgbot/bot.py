@@ -147,7 +147,7 @@ class PTGBot(irc.bot.SingleServerIRCBot):
             elif adverb == 'location':
                 self.data.add_location(track, params)
             elif adverb == 'book':
-                room, timeslot = params.split('-')
+                room, timeslot = params.split('-', 1)
                 if self.data.is_slot_valid_and_empty(room, timeslot):
                     self.data.book(track, room, timeslot)
                 else:
@@ -168,7 +168,7 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                 self.data.reload()
             elif command == 'unbook':
                 params = str.join(' ', words[1:])
-                room, timeslot = params.split('-')
+                room, timeslot = params.split('-', 1)
                 self.data.unbook(room, timeslot)
             elif command == 'newday':
                 self.data.new_day_cleanup()

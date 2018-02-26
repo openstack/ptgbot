@@ -24,6 +24,7 @@ import logging.config
 import os
 import time
 import ssl
+import textwrap
 
 import ptgbot.db
 
@@ -38,6 +39,11 @@ except ImportError:
 # irc-client-should-not-crash-on-failed
 # ^ This is why pep8 is a bad idea.
 irc.client.ServerConnection.buffer_class.errors = 'replace'
+# If a long message is split, how long to sleep between sending parts
+# of a message.  This is lower than the general recommended interval,
+# but in practice freenode allows short bursts at a higher rate.
+MESSAGE_CONTINUATION_SLEEP = 0.5
+# The amount of time to sleep between messages.
 ANTI_FLOOD_SLEEP = 2
 DOC_URL = 'https://git.openstack.org/cgit/openstack/ptgbot/tree/README.rst'
 
@@ -188,7 +194,14 @@ class PTGBot(irc.bot.SingleServerIRCBot):
                 return
 
     def send(self, channel, msg):
-        self.connection.privmsg(channel, msg)
+        # 400 chars is an estimate of a safe line length (which can vary)
+        chunks = textwrap.wrap(msg, 400)
+        if len(chunks) > 10:
+            raise Exception("Unusually large message: %s" % (msg,))
+        for count, chunk in enumerate(chunks):
+            self.connection.privmsg(channel, chunk)
+            if count:
+                time.sleep(MESSAGE_CONTINUATION_SLEEP)
         time.sleep(ANTI_FLOOD_SLEEP)
 
 

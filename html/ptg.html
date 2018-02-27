@@ -18,6 +18,12 @@
 
 <script id="PTGtemplate" type="text/x-handlebars-template">
 <style>
+.bot-help {
+    font-size: 85%;
+    font-style: italic;
+    padding-left: 8px;
+    padding-bottom: 4px;
+}
 {{#each colors as |color track|}}
 .{{track}} {
     background-color: {{color}};
@@ -39,6 +45,11 @@
     <tr><td><small><i>Nothing yet</i></small><td></tr>
   {{/each}}
   </table>
+  <div class="bot-help">
+    Use <code>#TRACK now INFO</code> to set;
+    this also clears "Coming up next..." info below.
+    <a href="https://github.com/openstack/ptgbot/blob/master/README.rst">(more help)</a>
+  </div>
 </div>
 <div class="panel panel-default">
   <div class="panel-heading"><h3 class="panel-title">Coming up next...</h3></div>
@@ -58,6 +69,10 @@
     <tr><td><small><i>Nothing yet</i></small><td></tr>
   {{/each}}
   </table>
+  <div class="bot-help">
+    Use <code>#TRACK next INFO</code> to append.
+    <a href="https://github.com/openstack/ptgbot/blob/master/README.rst">(more help)</a>
+  </div>
 </div>
 <div class="panel panel-default">
   <div class="panel-heading"><h3 class="panel-title">Scheduled tracks</h3></div>
@@ -90,7 +105,10 @@
     </div>
    {{/each}}
    </div>
-   <small><i>Use '#TRACK book SLOTREF' to book one of the empty slots with the ptgbot</i></small>
+  </div>
+  <div class="bot-help">
+    Use <code>#TRACK book SLOTREF</code> to book one of the empty slots with the ptgbot.
+    <a href="https://github.com/openstack/ptgbot/blob/master/README.rst">(more help)</a>
   </div>
 </div>
 <p class="text-muted">Content on this page is being driven by room operators through the <a href="https://github.com/openstack/ptgbot/blob/master/README.rst">openstackptg bot</a> on the <a href="http://eavesdrop.openstack.org/irclogs/%23openstack-ptg/">#openstack-ptg IRC channel</a>. It was last refreshed on {{timestamp}}.</p>

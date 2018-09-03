@@ -63,6 +63,18 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
         self.identify_msg_cap = False
         self.data = db
 
+    def on_welcome(self, c, e):
+        self.identify_msg_cap = False
+        self.log.debug("Requesting identify-msg capability")
+        c.cap('REQ', 'identify-msg')
+        c.cap('END')
+
+    def on_cap(self, c, e):
+        self.log.debug("Received cap response %s" % repr(e.arguments))
+        if e.arguments[0] == 'ACK' and 'identify-msg' in e.arguments[1]:
+            self.log.debug("identify-msg cap acked")
+            self.identify_msg_cap = True
+
     def usage(self, channel):
         self.send(channel, "Format is '#TRACK COMMAND [PARAMETERS]'")
         self.send(channel, "See doc at: " + DOC_URL)

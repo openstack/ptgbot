@@ -136,6 +136,8 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                 room, sep, timeslot = params.partition('-')
                 if self.data.is_slot_valid_and_empty(room, timeslot):
                     self.data.book(track, room, timeslot)
+                    self.send(chan, "%s: Room %s is now booked on %s for %s" %
+                              (nick, room, timeslot, track))
                 else:
                     self.send(chan, "%s: invalid slot reference '%s'" %
                               (nick, params))

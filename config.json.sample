@@ -27,10 +27,10 @@
       }
     ]
   },
-  "scheduled": {
+  "schedule": {
     "Ontario": {
       "MonAM": "swift",
-      "MonPM": "swift",
+      "MonPM": "",
       "TueAM": "swift",
       "TuePM": "swift"
     },
@@ -38,10 +38,6 @@
       "MonAM": "cinder",
       "MonPM": "cinder",
       "TueAM": "cinder",
-      "TuePM": "cinder"
     }
-  },
-  "extrarooms": {
-    "Missouri": ["MonAM", "MonPM", "TueAM", "TuePM"]
   }
 }

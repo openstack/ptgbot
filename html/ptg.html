@@ -92,11 +92,11 @@
         <th>{{time.desc}}</th>
       {{/each}}
       </tr></thead>
-     {{#each @root.scheduled as |schedule room|}}
-     {{#if (roomactive @root.scheduled @root.additional room times)}}
+     {{#each @root.schedule as |sched room|}}
+     {{#if (roomactive @root.schedule room times)}}
      <tr><td>{{room}}</td>
       {{#each (lookup @root.slots day) as |time|}}
-      <td>{{ roomcode @root.scheduled @root.additional room time.name 0 }}</td>
+      <td>{{ roomcode @root.schedule room time.name 0 }}</td>
       {{/each}}
      </tr>
      {{/if}}

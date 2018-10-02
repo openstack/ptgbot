@@ -22,43 +22,29 @@ Handlebars.registerHelper('trackContentLine', function(options) {
 });
 
 Handlebars.registerHelper('roomactive',
-                          function(scheduled, additional, room, times) {
+                          function(schedule, room, times) {
   for (var i=0; i<times.length; i++) {
-    if (scheduled[room][times[i]] != "") {
+    if (schedule[room][times[i]['name']] != undefined) {
       return true;
-    }
-    if (additional[room]) {
-      if (additional[room][times[i]['name']] != undefined) {
-        return true;
-      }
     }
   }
   return false;
 });
 
 Handlebars.registerHelper('roomcode',
-                          function(scheduled, additional, room, timecode, s) {
+                          function(schedule, room, timecode, s) {
   var cell = '';
-  content = scheduled[room][timecode];
-  if ((content != undefined) && (content != '')) {
-    cell = '<span class="label label-primary ' + scheduled[room][timecode] +
-           '">' + scheduled[room][timecode];
-    return new Handlebars.SafeString(cell);
-  } else {
-    if (additional[room]) {
-      if (additional[room][timecode] != undefined) {
-        if (additional[room][timecode] == "") {
-          if (s == 1) {
-            cell = '<small><i>Available for booking</i></small>';
-          } else {
-            cell = '<small><i>' + room + "-" + timecode + '</i></small>';
-          }
-        } else {
-          cell = '<span class="label label-primary ' +
-                 additional[room][timecode] +
-                 '">' + additional[room][timecode];
-        }
+  if (schedule[room][timecode] != undefined) {
+    if (schedule[room][timecode] == "") {
+      if (s == 1) {
+        cell = '<small><i>Available for booking</i></small>';
+      } else {
+        cell = '<small><i>' + room + "-" + timecode + '</i></small>';
       }
+    } else {
+      cell = '<span class="label label-primary ' +
+             schedule[room][timecode] +
+             '">' + schedule[room][timecode];
     }
   }
   return new Handlebars.SafeString(cell);

@@ -15,7 +15,6 @@
 import calendar
 import copy
 import datetime
-from itertools import chain
 import json
 import os
 import random
@@ -24,13 +23,12 @@ import random
 class PTGDataBase():
 
     BASE = {'tracks': [], 'slots': {}, 'now': {}, 'next': {}, 'colors': {},
-            'location': {}, 'scheduled': {}, 'additional': {}, 'voice': 0}
+            'location': {}, 'schedule': {}, 'voice': 0}
 
     def __init__(self, config):
         self.filename = config['db_filename']
         self.slots = config['slots']
-        self.scheduled = config['scheduled']
-        self.extrarooms = config['extrarooms']
+        self.schedule = config['schedule']
 
         if os.path.isfile(self.filename):
             with open(self.filename, 'r') as fp:
@@ -38,24 +36,16 @@ class PTGDataBase():
         else:
             self.data = copy.deepcopy(self.BASE)
 
-        old_data = copy.deepcopy(self.data['additional'])
         self.load_data_from_config()
-        self.merge_additional(old_data)
         self.save()
 
     def load_data_from_config(self):
         # Copy slots definition and scheduled rooms from configuration
         self.data['slots'] = self.slots
-        self.data['scheduled'] = self.scheduled
-
-        # Create additional rooms dictionary from extrarooms definition
-        for room in self.extrarooms.keys():
-            self.data['additional'][room] = {}
-            for slot in self.extrarooms[room]:
-                self.data['additional'][room][slot] = ''
+        self.data['schedule'] = self.schedule
 
         # Add tracks mentioned in configuration that are not in track list
-        for room, bookings in self.scheduled.items():
+        for room, bookings in self.schedule.items():
             for time, track in bookings.items():
                 if track not in self.data['tracks']:
                     self.data['tracks'].append(track)
@@ -73,15 +63,6 @@ class PTGDataBase():
                         '#930a0a',
                         '#dc0d0e',
                     ])
-
-    def merge_additional(self, old_data):
-        # Populate 'additional' with saved data where appropriate
-        for room in self.data['additional'].keys():
-            for slot in self.data['additional'][room].keys():
-                try:
-                    self.data['additional'][room][slot] = old_data[room][slot]
-                except KeyError:
-                    pass
 
     def add_now(self, track, session):
         self.data['now'][track] = session
@@ -104,9 +85,7 @@ class PTGDataBase():
         today = calendar.day_name[datetime.date.today().weekday()]
         if today not in self.data['slots']:
             today = next(iter(self.data['slots']))
-        all_schedule = chain(self.data['scheduled'].items(),
-                             self.data['additional'].items())
-        for room, bookings in all_schedule:
+        for room, bookings in self.data['schedule'].items():
             for btime, btrack in bookings.items():
                 for slot in self.data['slots'].get(today, []):
                     if btrack == track and btime == slot['name']:
@@ -151,18 +130,18 @@ class PTGDataBase():
 
     def is_slot_valid_and_empty(self, room, timeslot):
         try:
-            return not self.data['additional'][room][timeslot]
+            return not self.data['schedule'][room][timeslot]
         except KeyError:
             return False
 
     def book(self, track, room, timeslot):
-        self.data['additional'][room][timeslot] = track
+        self.data['schedule'][room][timeslot] = track
         self.save()
 
     def unbook(self, room, timeslot):
-        if room in self.data['additional'].keys():
-            if timeslot in self.data['additional'][room].keys():
-                self.data['additional'][room][timeslot] = ""
+        if room in self.data['schedule'].keys():
+            if timeslot in self.data['schedule'][room].keys():
+                self.data['schedule'][room][timeslot] = ""
         self.save()
 
     def is_voice_required(self):

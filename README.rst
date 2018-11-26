@@ -133,8 +133,8 @@ You have to be a channel operator (+o) to use admin commands.
 ~newday
   Removes now/next/location entries, to be run at the start of a new day
 
-~reload
-  Resets the database entirely (reloads from configuration)
+~emptydb
+  Resets the database entirely to minimal contents
 
 ~fetchdb URL
   Fetches JSON DB from specified URL. Any JSON key specified will replace

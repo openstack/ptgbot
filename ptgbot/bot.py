@@ -153,8 +153,8 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                 return
             words = msg.split()
             command = words[0][1:].lower()
-            if command == 'reload':
-                self.data.reload()
+            if command == 'emptydb':
+                self.data.empty()
             elif command == 'fetchdb':
                 url = words[1]
                 self.send(chan, "Loading DB from %s ..." % url)

@@ -139,6 +139,13 @@ You have to be a channel operator (+o) to use admin commands.
 ~newday
   Removes now/next/location entries, to be run at the start of a new day
 
+~motd LEVEL MESSAGE
+  Adds a message of the day on top of the rendered page. Level must be one of
+  info, success, warning or danger.
+
+~cleanmotd
+  Removes message of the day on top of the rendered page.
+
 ~emptydb
   Resets the database entirely to minimal contents
 

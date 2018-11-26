@@ -23,7 +23,8 @@ import random
 class PTGDataBase():
 
     BASE = {'tracks': [], 'slots': {}, 'now': {}, 'next': {}, 'colors': {},
-            'location': {}, 'schedule': {}, 'voice': 0}
+            'location': {}, 'schedule': {}, 'voice': 0,
+            'motd': {'message': '', 'level': 'info'}}
 
     def __init__(self, config):
         self.filename = config['db_filename']
@@ -169,10 +170,19 @@ class PTGDataBase():
         self.data['now'] = {}
         self.data['next'] = {}
         self.data['location'] = {}
-        self.save()
+        self.clean_motd()
 
     def empty(self):
         self.data = copy.deepcopy(self.BASE)
+        self.save()
+
+    def motd(self, level, message):
+        if level in ['info', 'success', 'warning', 'danger']:
+            self.data['motd'] = {'level': level, 'message': message}
+            self.save()
+
+    def clean_motd(self):
+        self.data['motd'] = {'level': '', 'message': ''}
         self.save()
 
     def save(self):

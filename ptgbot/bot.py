@@ -176,6 +176,13 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                     self.send(chan, "Error loading DB: %s" % e)
             elif command == 'newday':
                 self.data.new_day_cleanup()
+            elif command == 'motd':
+                if len(words) < 3:
+                    self.send(chan, "Not enough params (~motd LEVEL MESSAGE)")
+                    return
+                self.data.motd(words[1], str.join(' ', words[2:]))
+            elif command == 'cleanmotd':
+                self.data.clean_motd()
             elif command == 'requirevoice':
                 self.data.require_voice()
             elif command == 'alloweveryone':

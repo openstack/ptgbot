@@ -140,8 +140,19 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                     self.send(chan, "%s: Room %s is now booked on %s for %s" %
                               (nick, room, timeslot, track))
                 else:
-                    self.send(chan, "%s: invalid slot reference '%s'" %
+                    self.send(chan, "%s: slot '%s' is invalid (or booked)" %
                               (nick, params))
+            elif adverb == 'unbook':
+                room, sep, timeslot = params.partition('-')
+                if self.data.is_slot_booked_for_track(track, room, timeslot):
+                    self.data.unbook(room, timeslot)
+                    self.send(chan, "%s: Room %s (previously booked for %s) "
+                              "is now free on %s" %
+                              (nick, room, track, timeslot))
+                else:
+                    self.send(chan, "%s: slot '%s' is invalid "
+                              "(or not booked for %s)" %
+                              (nick, params, track))
             else:
                 self.send(chan, "%s: unknown directive '%s'" % (nick, adverb))
                 self.usage(chan)
@@ -163,10 +174,6 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                     self.send(chan, "Done.")
                 except Exception as e:
                     self.send(chan, "Error loading DB: %s" % e)
-            elif command == 'unbook':
-                params = str.join(' ', words[1:])
-                room, sep, timeslot = params.partition('-')
-                self.data.unbook(room, timeslot)
             elif command == 'newday':
                 self.data.new_day_cleanup()
             elif command == 'requirevoice':

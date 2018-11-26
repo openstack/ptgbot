@@ -138,6 +138,12 @@ class PTGDataBase():
         except KeyError:
             return False
 
+    def is_slot_booked_for_track(self, track, room, timeslot):
+        try:
+            return self.data['schedule'][room][timeslot] == track
+        except KeyError:
+            return False
+
     def book(self, track, room, timeslot):
         self.data['schedule'][room][timeslot] = track
         self.save()

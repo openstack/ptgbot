@@ -79,6 +79,15 @@ you can use book the room. Example usage::
   you can use the ``now`` and ``next`` commands to communicate what topic
   is being discussed.
 
+unbook
+------
+
+The ``unbook`` command is used to free up booked slots in the additional rooms.
+You should generally not unbook a track without the consent of its track lead.
+Example usage::
+
+  #vitrage unbook Missouri-MonAM
+
 clean
 -----
 
@@ -126,9 +135,6 @@ You have to be a channel operator (+o) to use admin commands.
 
 ~clean TRACK [TRACK..]
   Removes active entries for specified track(s)
-
-~unbook SLOTCODE
-  Removes any booking at the slot named SLOTCODE
 
 ~newday
   Removes now/next/location entries, to be run at the start of a new day

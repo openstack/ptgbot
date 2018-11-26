@@ -49,20 +49,8 @@ class PTGDataBase():
             for time, track in bookings.items():
                 if track not in self.data['tracks']:
                     self.data['tracks'].append(track)
-                    self.data['colors'][track] = random.choice([
-                        '#596468',
-                        '#9ea8ad',
-                        '#b57506',
-                        '#f8ac29',
-                        '#5b731a',
-                        '#9dc62d',
-                        '#156489',
-                        '#27a3dd',
-                        '#2a6d3c',
-                        '#3fa45b',
-                        '#930a0a',
-                        '#dc0d0e',
-                    ])
+
+        self.colorize()
 
     def add_now(self, track, session):
         self.data['now'][track] = session
@@ -77,6 +65,24 @@ class PTGDataBase():
     def add_color(self, track, color):
         self.data['colors'][track] = color
         self.save()
+
+    def colorize(self):
+        for track in self.data['tracks']:
+            if track not in self.data['colors']:
+                self.add_color(track, random.choice([
+                    '#596468',
+                    '#9ea8ad',
+                    '#b57506',
+                    '#f8ac29',
+                    '#5b731a',
+                    '#9dc62d',
+                    '#156489',
+                    '#27a3dd',
+                    '#2a6d3c',
+                    '#3fa45b',
+                    '#930a0a',
+                    '#dc0d0e',
+                ]))
 
     def get_track_room(self, track):
         # This simplified version returns the first room the track is
@@ -112,6 +118,7 @@ class PTGDataBase():
         for track in tracks:
             if track not in self.data['tracks']:
                 self.data['tracks'].append(track)
+        self.colorize()
         self.save()
 
     def del_tracks(self, tracks):

@@ -124,11 +124,6 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
 
             adverb = words[1].lower()
             params = str.join(' ', words[2:])
-            if adverb in ['now', 'next', 'location']:
-                if not self.data.get_track_room(track):
-                    self.send(chan, "%s: track '%s' is not scheduled today" %
-                              (nick, track))
-                    return
             if adverb == 'now':
                 self.data.add_now(track, params)
             elif adverb == 'next':
@@ -164,6 +159,11 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                           "Did you mean: %s now %s... ?" %
                           (nick, adverb, track, adverb))
                 return
+            if adverb in ['now', 'next']:
+                if not self.data.get_track_room(track):
+                    self.send(chan, "%s: message added, but please note that "
+                              "track '%s' does not appear to have a room "
+                              "scheduled today." % (nick, track))
 
         if msg.startswith('~'):
             if not self.channels[chan].is_oper(nick):

@@ -136,6 +136,10 @@ You have to be a channel operator (+o) to use admin commands.
 ~reload
   Resets the database entirely (reloads from configuration)
 
+~fetchdb URL
+  Fetches JSON DB from specified URL. Any JSON key specified will replace
+  existing data in database.
+
 ~requirevoice
   Requires that users are voiced (+v) to issue track moderation commands
 
@@ -166,7 +170,7 @@ In one terminal, run the bot::
 
 Join that channel and give commands to the bot::
 
-  ~add swift
+  ~fetchdb http://paste.openstack.org/raw/736003/
   #swift now discussing ring placement
 
 (note, the bot currently only takes commands from Freenode identified users)

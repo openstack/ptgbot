@@ -27,8 +27,6 @@ class PTGDataBase():
 
     def __init__(self, config):
         self.filename = config['db_filename']
-        self.slots = config['slots']
-        self.schedule = config['schedule']
 
         if os.path.isfile(self.filename):
             with open(self.filename, 'r') as fp:
@@ -36,21 +34,20 @@ class PTGDataBase():
         else:
             self.data = copy.deepcopy(self.BASE)
 
-        self.load_data_from_config()
         self.save()
 
-    def load_data_from_config(self):
-        # Copy slots definition and scheduled rooms from configuration
-        self.data['slots'] = self.slots
-        self.data['schedule'] = self.schedule
+    def import_json(self, jsondata):
+        # Update the DB with the data found in the provided JSON
+        self.data.update(jsondata)
 
         # Add tracks mentioned in configuration that are not in track list
-        for room, bookings in self.schedule.items():
+        for room, bookings in self.data['schedule'].items():
             for time, track in bookings.items():
                 if track not in self.data['tracks']:
-                    self.data['tracks'].append(track)
+                    self.add_tracks([track])
 
         self.colorize()
+        self.save()
 
     def add_now(self, track, session):
         self.data['now'][track] = session
@@ -170,7 +167,6 @@ class PTGDataBase():
 
     def reload(self):
         self.data = copy.deepcopy(self.BASE)
-        self.load_data_from_config()
         self.save()
 
     def save(self):

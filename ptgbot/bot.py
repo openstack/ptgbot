@@ -77,7 +77,8 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
             self.identify_msg_cap = True
 
     def usage(self, channel):
-        self.send(channel, "Format is '#TRACK COMMAND [PARAMETERS]'")
+        self.send(channel, "I accept commands in the following format: "
+                  "'#TRACK COMMAND [PARAMETERS]'")
         self.send(channel, "See doc at: " + DOC_URL)
 
     def send_track_list(self, channel):
@@ -104,9 +105,14 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                 return
 
             words = msg.split()
+
+            if words[0] == '#help':
+                self.usage(chan)
+                return
+
             if ((len(words) < 2) or
                (len(words) == 2 and words[1].lower() != 'clean')):
-                self.send(chan, "%s: Incorrect number of arguments" % (nick,))
+                self.send(chan, "%s: Incorrect arguments" % (nick,))
                 self.usage(chan)
                 return
 
@@ -154,8 +160,9 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                               "(or not booked for %s)" %
                               (nick, params, track))
             else:
-                self.send(chan, "%s: unknown directive '%s'" % (nick, adverb))
-                self.usage(chan)
+                self.send(chan, "%s: unknown directive '%s'. "
+                          "Did you mean: %s now %s... ?" %
+                          (nick, adverb, track, adverb))
                 return
 
         if msg.startswith('~'):

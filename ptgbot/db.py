@@ -24,7 +24,8 @@ class PTGDataBase():
 
     BASE = {'tracks': [], 'slots': {}, 'now': {}, 'next': {}, 'colors': {},
             'location': {}, 'schedule': {}, 'voice': 0,
-            'motd': {'message': '', 'level': 'info'}}
+            'motd': {'message': '', 'level': 'info'},
+            'links': {}}
 
     def __init__(self, config):
         self.filename = config['db_filename']

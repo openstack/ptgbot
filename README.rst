@@ -183,7 +183,7 @@ In one terminal, run the bot::
 
 Join that channel and give commands to the bot::
 
-  ~fetchdb http://paste.openstack.org/raw/736003/
+  ~fetchdb http://paste.openstack.org/raw/737820/
   #swift now discussing ring placement
 
 (note, the bot currently only takes commands from Freenode identified users)

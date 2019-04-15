@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import calendar
+from collections import OrderedDict
 import copy
 import datetime
 import json
@@ -22,17 +23,23 @@ import random
 
 class PTGDataBase():
 
-    BASE = {'tracks': [], 'slots': {}, 'now': {}, 'next': {}, 'colors': {},
-            'location': {}, 'schedule': {}, 'voice': 0,
+    BASE = {'tracks': [],
+            'slots': OrderedDict(),
+            'now': OrderedDict(),
+            'next': OrderedDict(),
+            'colors': OrderedDict(),
+            'location': OrderedDict(),
+            'schedule': OrderedDict(),
+            'voice': 0,
             'motd': {'message': '', 'level': 'info'},
-            'links': {}}
+            'links': OrderedDict()}
 
     def __init__(self, config):
         self.filename = config['db_filename']
 
         if os.path.isfile(self.filename):
             with open(self.filename, 'r') as fp:
-                self.data = json.load(fp)
+                self.data = json.load(fp, object_pairs_hook=OrderedDict)
         else:
             self.data = copy.deepcopy(self.BASE)
 

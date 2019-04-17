@@ -22,7 +22,6 @@ import irc.bot
 import json
 import logging.config
 import os
-import requests
 import time
 import textwrap
 
@@ -177,7 +176,7 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                 url = words[1]
                 self.send(chan, "Loading DB from %s ..." % url)
                 try:
-                    self.data.import_json(requests.get(url).json())
+                    self.data.import_json(url)
                     self.send(chan, "Done.")
                 except Exception as e:
                     self.send(chan, "Error loading DB: %s" % e)

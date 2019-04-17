@@ -19,6 +19,7 @@ import datetime
 import json
 import os
 import random
+import requests
 
 
 class PTGDataBase():
@@ -45,9 +46,9 @@ class PTGDataBase():
 
         self.save()
 
-    def import_json(self, jsondata):
-        # Update the DB with the data found in the provided JSON
-        self.data.update(jsondata)
+    def import_json(self, url):
+        # Update the DB with the JSON data found at URL
+        self.data.update(requests.get(url).json(object_pairs_hook=OrderedDict))
 
         # Add tracks mentioned in configuration that are not in track list
         for room, bookings in self.data['schedule'].items():

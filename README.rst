@@ -1,6 +1,6 @@
-=================
-OpenStack PTG Bot
-=================
+===========================
+Open Infrastructure PTG Bot
+===========================
 
 ptgbot is the bot that PTG track moderators use to surface what's
 currently happening at the event. Track moderators send messages to

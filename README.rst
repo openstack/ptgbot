@@ -12,6 +12,37 @@ with several sections of information:
 * The tracks pre-scheduled for the day
 * The tracks which booked available slots in the additional rooms
 
+The bot also allows people to voluntarily check into (and out of)
+tracks or other arbitrary locations, if they want to be found more
+easily by other people.
+
+
+User commands
+=============
+
+Anyone can privately message the bot with the following commands:
+
+* ``in #TRACKNAME`` - tells the bot you are currently in the track
+  named ``TRACKNAME``.  This must be one of the tracks it knows about,
+  for example: ``in #nova``
+
+* ``in LOCATION`` - tells the bot you are currently in a location
+  which doesn't correspond to any track.  This can be any freeform
+  text, for example: ``in the pub``
+
+* ``out`` - tells the bot you've checked out of your current location.
+  However others will still be able to see when and where you checked
+  out.
+
+* ``seen NICK`` - asks the bot where the user with the given IRC nick
+  was last seen (if anywhere).  The nick is case-insensitive.
+
+The above commands also work in the channel when prefixed with ``#``,
+for example ``#in the pub``.  You can use the ``#`` prefix with
+private messages to the bot too, in case you don't want to memorise
+different syntax for these presence-tracking commands depending on
+whether you are messaging the bot privately or in a channel.
+
 
 Track moderators commands
 =========================

@@ -87,6 +87,109 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
         else:
             self.send(channel, "There are no active tracks defined yet")
 
+    def on_privmsg(self, c, e):
+        if not self.identify_msg_cap:
+            self.log.debug("Ignoring message because identify-msg "
+                           "cap not enabled")
+            return
+        nick = e.source.split('!')[0]
+        msg = e.arguments[0][1:]
+        words = msg.split()
+        cmd = words[0].lower()
+        words.pop(0)
+
+        if cmd.startswith('#'):
+            cmd = cmd[1:]
+
+        if cmd == 'in':
+            self.check_in(nick, nick, words)
+        elif cmd == 'out':
+            self.check_out(nick, nick, words)
+        elif cmd == 'seen':
+            self.last_seen(nick, nick, words)
+        else:
+            self.send_priv_or_pub(nick, None,
+                                  "Recognised commands: in, out, seen")
+
+    def check_in(self, reply_to, nick, words):
+        if len(words) == 0:
+            self.send_priv_or_pub(
+                reply_to, nick,
+                "The 'in' command should be followed by a location.")
+            return
+
+        location = " ".join(words)
+
+        if location.startswith('#'):
+            track = location[1:].lower()
+            tracks = self.data.list_tracks()
+            if track not in tracks:
+                self.send_priv_or_pub(
+                    reply_to, nick, "Unrecognised track #%s" % track)
+                return
+
+        self.data.check_in(nick, location)
+        self.send_priv_or_pub(
+            reply_to, nick,
+            "OK, checked into %s - thanks for the update!" % location)
+
+    def check_out(self, reply_to, nick, words):
+        if len(words) > 0:
+            self.send_priv_or_pub(
+                reply_to, nick,
+                "The 'out' command does not accept any extra parameters.")
+            return
+
+        last_check_in = self.data.get_last_check_in(nick)
+        if last_check_in['location'] is None:
+            self.send_priv_or_pub(
+                reply_to, nick, "You weren't checked in anywhere yet!")
+            return
+
+        if last_check_in['out'] is not None:
+            self.send_priv_or_pub(
+                reply_to, nick,
+                "You already checked out of %s at %s!" %
+                (last_check_in['location'], last_check_in['out']))
+            return
+
+        location = self.data.check_out(nick)
+        self.send_priv_or_pub(
+            reply_to, nick,
+            "OK, checked out of %s - thanks for the update!" % location)
+
+    def last_seen(self, reply_to, nick, words):
+        if len(words) != 1:
+            self.send_priv_or_pub(
+                reply_to, nick,
+                "The 'seen' command needs a single nick argument.")
+            return
+
+        seen_nick = words[0]
+        if nick.lower() == seen_nick.lower():
+            self.send_priv_or_pub(
+                reply_to, nick,
+                "In case you hadn't noticed, you're right here.")
+            return
+
+        last_check_in = self.data.get_last_check_in(seen_nick)
+        if last_check_in['location'] is None:
+            self.send_priv_or_pub(
+                reply_to, nick,
+                "%s never checked in anywhere" % seen_nick)
+        elif last_check_in['out'] is None:
+            self.send_priv_or_pub(
+                reply_to, nick,
+                "%s was last seen in %s at %s" %
+                (last_check_in['nick'], last_check_in['location'],
+                 last_check_in['in']))
+        else:
+            self.send_priv_or_pub(
+                reply_to, nick,
+                "%s checked out of %s at %s" %
+                (last_check_in['nick'], last_check_in['location'],
+                 last_check_in['out']))
+
     def on_pubmsg(self, c, e):
         if not self.identify_msg_cap:
             self.log.debug("Ignoring message because identify-msg "
@@ -97,15 +200,26 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
         chan = e.target
 
         if msg.startswith('#'):
+            words = msg.split()
+            cmd = words[0].lower()
+
+            if cmd == '#in':
+                self.check_in(chan, nick, words[1:])
+                return
+            elif cmd == '#out':
+                self.check_out(chan, nick, words[1:])
+                return
+            elif cmd == '#seen':
+                self.last_seen(chan, nick, words[1:])
+                return
+
             if (self.data.is_voice_required() and not
                     (self.channels[chan].is_voiced(nick) or
                      self.channels[chan].is_oper(nick))):
                 self.send(chan, "%s: Need voice to issue commands" % (nick,))
                 return
 
-            words = msg.split()
-
-            if words[0] == '#help':
+            if cmd == '#help':
                 self.usage(chan)
                 return
 
@@ -203,6 +317,12 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
             else:
                 self.send(chan, "%s: unknown command '%s'" % (nick, command))
                 return
+
+    def send_priv_or_pub(self, target, nick, msg):
+        if target.startswith('#') and nick is not None:
+            self.send(target, "%s: %s" % (nick, msg))
+        else:
+            self.send(target, msg)
 
     def send(self, channel, msg):
         # 400 chars is an estimate of a safe line length (which can vary)

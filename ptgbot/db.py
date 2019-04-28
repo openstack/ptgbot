@@ -33,7 +33,15 @@ class PTGDataBase():
             'schedule': OrderedDict(),
             'voice': 0,
             'motd': {'message': '', 'level': 'info'},
-            'links': OrderedDict()}
+            'links': OrderedDict(),
+            # Keys for last_check_in are lower-cased nicks;
+            # values are in the same format as BASE_CHECK_IN
+            'last_check_in': OrderedDict()}
+
+    BASE_CHECK_IN = {
+        'nick': None,  # original case for use in output
+        'location': None, 'in': None, 'out': None
+    }
 
     def __init__(self, config):
         self.filename = config['db_filename']
@@ -194,9 +202,44 @@ class PTGDataBase():
         self.data['motd'] = {'level': '', 'message': ''}
         self.save()
 
+    def _blank_check_in(self):
+        # No need for a copy here
+        return OrderedDict(self.BASE_CHECK_IN)
+
+    def get_last_check_in(self, nick):
+        if 'last_check_in' not in self.data:
+            return self._blank_check_in()
+        return self.data['last_check_in'].get(
+            nick.lower(), self._blank_check_in())
+
+    def check_in(self, nick, location):
+        if 'last_check_in' not in self.data:
+            self.data['last_check_in'] = OrderedDict()
+        self.data['last_check_in'][nick.lower()] = {
+            'nick': nick,
+            'location': location,
+            'in': self.serialise_timestamp(datetime.datetime.now()),
+            'out': None  # no check-out yet
+        }
+        self.save()
+
+    # Returns location if successfully checked out, otherwise None
+    def check_out(self, nick):
+        if 'last_check_in' not in self.data:
+            self.data['last_check_in'] = OrderedDict()
+        if nick.lower() not in self.data['last_check_in']:
+            return None
+        self.data['last_check_in'][nick.lower()]['out'] = \
+            self.serialise_timestamp(datetime.datetime.now())
+        self.save()
+        return self.data['last_check_in'][nick]['location']
+
     def save(self):
         timestamp = datetime.datetime.now()
-        self.data['timestamp'] = '{:%Y-%m-%d %H:%M:%S}'.format(timestamp)
+        self.data['timestamp'] = self.serialise_timestamp(timestamp)
         self.data['tracks'] = sorted(self.data['tracks'])
         with open(self.filename, 'w') as fp:
             json.dump(self.data, fp)
+
+    def serialise_timestamp(self, timestamp):
+        return '{:%Y-%m-%d %H:%M:%S}'.format(timestamp)

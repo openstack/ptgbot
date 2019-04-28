@@ -44,7 +44,7 @@ irc.client.ServerConnection.buffer_class.errors = 'replace'
 MESSAGE_CONTINUATION_SLEEP = 0.5
 # The amount of time to sleep between messages.
 ANTI_FLOOD_SLEEP = 2
-DOC_URL = 'https://git.openstack.org/cgit/openstack/ptgbot/tree/README.rst'
+DOC_URL = 'https://opendev.org/openstack/ptgbot/src/branch/master/README.rst'
 
 
 class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):

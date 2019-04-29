@@ -166,13 +166,8 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
             return
 
         seen_nick = words[0]
-        if nick.lower() == seen_nick.lower():
-            self.send_priv_or_pub(
-                reply_to, nick,
-                "In case you hadn't noticed, you're right here.")
-            return
-
         last_check_in = self.data.get_last_check_in(seen_nick)
+
         if last_check_in['location'] is None:
             self.send_priv_or_pub(
                 reply_to, nick,

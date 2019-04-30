@@ -21,6 +21,7 @@ from ib3.connection import SSL
 import irc.bot
 import json
 import logging.config
+import re
 import os
 import time
 import textwrap
@@ -107,9 +108,13 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
             self.check_out(nick, nick, words)
         elif cmd == 'seen':
             self.last_seen(nick, nick, words)
+        elif cmd == 'subscribe':
+            self.subscribe(nick, nick, msg.lstrip('#' + cmd).strip())
+        elif cmd == 'unsubscribe':
+            self.unsubscribe(nick, nick)
         else:
-            self.send_priv_or_pub(nick, None,
-                                  "Recognised commands: in, out, seen")
+            self.send_priv_or_pub(
+                nick, None, "Recognised commands: in, out, seen, subscribe")
 
     def check_in(self, reply_to, nick, words):
         if len(words) == 0:
@@ -190,6 +195,40 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                 (last_check_in['nick'], last_check_in['location'],
                  last_check_in['out']))
 
+    def subscribe(self, reply_to, nick, new_re):
+        existing_re = self.data.get_subscription(nick)
+        if new_re == "":
+            if existing_re is None:
+                self.send_priv_or_pub(
+                    reply_to, nick,
+                    "You don't have a subscription regex set yet"
+                )
+            else:
+                self.send_priv_or_pub(
+                    reply_to, nick,
+                    "Your current subscription regex is: " + existing_re)
+        else:
+            self.data.set_subscription(nick, new_re)
+            self.send_priv_or_pub(
+                reply_to, nick,
+                "Subscription set to " + new_re +
+                (" (was %s)" % existing_re if existing_re else "")
+            )
+
+    def unsubscribe(self, reply_to, nick):
+        existing_re = self.data.get_subscription(nick)
+        if existing_re is None:
+            self.send_priv_or_pub(
+                reply_to, nick,
+                "You don't have a subscription regex set yet"
+            )
+        else:
+            self.data.set_subscription(nick, None)
+            self.send_priv_or_pub(
+                reply_to, nick,
+                "Cancelled subscription %s" % existing_re
+            )
+
     def on_pubmsg(self, c, e):
         if not self.identify_msg_cap:
             self.log.debug("Ignoring message because identify-msg "
@@ -211,6 +250,13 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                 return
             elif cmd == '#seen':
                 self.last_seen(chan, nick, words[1:])
+                return
+
+            elif cmd == '#subscribe':
+                self.subscribe(chan, nick, msg.lstrip('#' + cmd).strip())
+                return
+            elif cmd == '#unsubscribe':
+                self.unsubscribe(chan, nick)
                 return
 
             if (self.data.is_voice_required() and not
@@ -239,8 +285,10 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
             params = str.join(' ', words[2:])
             if adverb == 'now':
                 self.data.add_now(track, params)
+                self.notify(track, adverb, params)
             elif adverb == 'next':
                 self.data.add_next(track, params)
+                self.notify(track, adverb, params)
             elif adverb == 'clean':
                 self.data.clean_tracks([track])
             elif adverb == 'color':
@@ -317,6 +365,24 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
             else:
                 self.send(chan, "%s: unknown command '%s'" % (nick, command))
                 return
+
+    def notify(self, track, adverb, params):
+        location = self.data.get_location(track)
+        track = '#' + track
+        trackloc = track
+        if location is not None:
+            trackloc = "%s (%s)" % (track, location)
+
+        for nick, regexp in self.data.get_subscriptions().items():
+            event_text = " ".join([track, adverb, params])
+            if re.search(regexp, event_text, re.IGNORECASE):
+                message = "%s in %s: %s" % (adverb, trackloc, params)
+                # Note: there is no guarantee that nick will be online
+                # at this point.  However if not, the bot will receive
+                # a 401 :No such nick/channel message which it will
+                # ignore due to the lack of a nosuchnick handler.
+                # Fortunately this is the behaviour we want.
+                self.send(nick, message)
 
     def send_priv_or_pub(self, target, nick, msg):
         if target.startswith('#') and nick is not None:

@@ -111,6 +111,31 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
             self.send_priv_or_pub(nick, None,
                                   "Recognised commands: in, out, seen")
 
+    # Checks location against known tracks.  If prefixed with # then
+    # insists it must match a known track.  If not #-prefixed but
+    # matches a known track then the # prefix is added.  Returns the
+    # normalized location to check into, or None if a valid one was
+    # not established.  When matching/matched against a known track,
+    # it will be lower-cased.  This assumes that all registered tracks
+    # are lower-case.
+    def normalize_location(self, reply_to, nick, location):
+        tracks = self.data.list_tracks()
+
+        if location.startswith('#'):
+            track = location[1:].lower()
+            if track in tracks:
+                return location.lower()
+            else:
+                self.send_priv_or_pub(
+                    reply_to, nick, "Unrecognised track #%s" % track)
+                return None
+        else:
+            if location.lower() in tracks:
+                return '#' + location.lower()
+            else:
+                # Free-form location
+                return location
+
     def check_in(self, reply_to, nick, words):
         if len(words) == 0:
             self.send_priv_or_pub(
@@ -119,14 +144,9 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
             return
 
         location = " ".join(words)
-
-        if location.startswith('#'):
-            track = location[1:].lower()
-            tracks = self.data.list_tracks()
-            if track not in tracks:
-                self.send_priv_or_pub(
-                    reply_to, nick, "Unrecognised track #%s" % track)
-                return
+        location = self.normalize_location(reply_to, nick, location)
+        if location is None:
+            return
 
         self.data.check_in(nick, location)
         self.send_priv_or_pub(

@@ -42,9 +42,19 @@ Handlebars.registerHelper('roomcode',
         cell = '<small><i>' + room + "-" + timecode + '</i></small>';
       }
     } else {
+      var track = schedule[room][timecode];
+      var room_checkins = checkins['#' + track];
+      var title = "No one is checked in here. " +
+          "DM the bot 'in #" + track + "' to check in.";
+      if (room_checkins) {
+        var attendees = room_checkins.map(function(checkin) {
+          return checkin.nick;
+        }).sort();
+        title = 'Checked in here: ' + attendees.join(", ");
+      }
       cell = '<span class="label label-primary ' +
-             schedule[room][timecode] +
-             '">' + schedule[room][timecode];
+              track +
+             '" title="' + title + '">' + track;
     }
   }
   return new Handlebars.SafeString(cell);
@@ -54,8 +64,24 @@ Handlebars.registerHelper('roomcode',
 var now = new Date();
 var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 var day = days[ now.getDay() ];
+var checkins = {};
 
 $.getJSON("ptg.json", function(json) {
+  if ('last_check_in' in json) {
+    // Compile lists of who's checked into each location
+    for (var attendee in json['last_check_in']) {
+      var checkin = json['last_check_in'][attendee];
+      if (checkin.location) {
+        if (checkin['in'] && ! checkin['out']) {
+          if (! (checkin.location in checkins)) {
+            checkins[checkin.location] = [];
+          }
+          checkins[checkin.location].push(checkin);
+        }
+      }
+    }
+  }
+  json['checkins'] = checkins;
   document.getElementById("PTGsessions").innerHTML = template(json);
   // if the current day doesn't exist, default to first existing one
   if ($('#st'+day).length == 0) {

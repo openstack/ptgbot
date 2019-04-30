@@ -36,7 +36,8 @@ class PTGDataBase():
             'links': OrderedDict(),
             # Keys for last_check_in are lower-cased nicks;
             # values are in the same format as BASE_CHECK_IN
-            'last_check_in': OrderedDict()}
+            'last_check_in': OrderedDict(),
+            'subscriptions': OrderedDict()}
 
     BASE_CHECK_IN = {
         'nick': None,  # original case for use in output
@@ -116,6 +117,9 @@ class PTGDataBase():
     def add_location(self, track, location):
         self.data['location'][track] = location
         self.save()
+
+    def get_location(self, track):
+        return self.data['location'].get(track)
 
     def add_next(self, track, session):
         if track not in self.data['next']:
@@ -233,6 +237,22 @@ class PTGDataBase():
             self.serialise_timestamp(datetime.datetime.now())
         self.save()
         return self.data['last_check_in'][nick]['location']
+
+    def get_subscription(self, nick):
+        if 'subscriptions' not in self.data:
+            return None
+        return self.data['subscriptions'].get(nick)
+
+    def get_subscriptions(self):
+        if 'subscriptions' not in self.data:
+            return {}
+        return self.data['subscriptions']
+
+    def set_subscription(self, nick, regexp):
+        if 'subscriptions' not in self.data:
+            self.data['subscriptions'] = OrderedDict()
+        self.data['subscriptions'][nick] = regexp
+        self.save()
 
     def save(self):
         timestamp = datetime.datetime.now()

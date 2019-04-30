@@ -37,11 +37,25 @@ Anyone can privately message the bot with the following commands:
 * ``seen NICK`` - asks the bot where the user with the given IRC nick
   was last seen (if anywhere).  The nick is case-insensitive.
 
+* ``subscribe REGEXP`` - subscribes for a direct message notification
+  from the bot whenever a topic with a substring matching ``REGEXP``
+  is set via the ``now`` or ``next`` commands (see below).  The exact
+  string the (case-insensitive) regular expression will be matched
+  against is of the form ``#track now topic`` (i.e. the same as the
+  full commands issued by track moderators).  So for example
+  ``subscribe #nova.*test|python *3`` would match any testing topics
+  in the nova track, and any Python 3 topics in any track.
+
+* ``subscribe`` - shows your current subscription regular expression
+  (if any)
+
+* ``unsubscribe`` - cancels your current subscription (if any)
+
 The above commands also work in the channel when prefixed with ``#``,
 for example ``#in the pub``.  You can use the ``#`` prefix with
 private messages to the bot too, in case you don't want to memorise
-different syntax for these presence-tracking commands depending on
-whether you are messaging the bot privately or in a channel.
+different syntax for these commands depending on whether you are
+messaging the bot privately or in a channel.
 
 
 Track moderators commands

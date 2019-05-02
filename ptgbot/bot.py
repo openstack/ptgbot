@@ -223,12 +223,17 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                     reply_to, nick,
                     "Your current subscription regex is: " + existing_re)
         else:
-            self.data.set_subscription(nick, new_re)
-            self.send_priv_or_pub(
-                reply_to, nick,
-                "Subscription set to " + new_re +
-                (" (was %s)" % existing_re if existing_re else "")
-            )
+            try:
+                re.compile(new_re)
+            except Exception as e:
+                self.send_priv_or_pub(reply_to, nick, "Invalid regex: %s" % e)
+            else:
+                self.data.set_subscription(nick, new_re)
+                self.send_priv_or_pub(
+                    reply_to, nick,
+                    "Subscription set to " + new_re +
+                    (" (was %s)" % existing_re if existing_re else "")
+                )
 
     def unsubscribe(self, reply_to, nick):
         existing_re = self.data.get_subscription(nick)

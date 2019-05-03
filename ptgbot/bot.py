@@ -394,6 +394,9 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
             trackloc = "%s (%s)" % (track, location)
 
         for nick, regexp in self.data.get_subscriptions().items():
+            if regexp is None:
+                # Person did #unsubscribe, so skip
+                continue
             event_text = " ".join([track, adverb, params])
             if re.search(regexp, event_text, re.IGNORECASE):
                 message = "%s in %s: %s" % (adverb, trackloc, params)

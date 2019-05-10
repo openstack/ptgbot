@@ -32,6 +32,28 @@ Handlebars.registerHelper('roomactive',
   return false;
 });
 
+Handlebars.registerHelper('checkins', function(track) {
+  var count = checkins_count(track);
+  var url = "https://opendev.org/openstack/ptgbot/src/branch/master/README.rst";
+  var text;
+  var title = "See below or click for how to check in/out";
+  if (count == 0) {
+    text = 'No check-ins';
+  } else {
+    text = count + ' check-in' + (count == 1 ? '' : 's');
+    title = checkins_tooltip(track) + ".\n\n" + title + '.';
+  }
+  return new Handlebars.SafeString(
+    '<a href="' + url + '" target="blank" class="checkins" title="'
+      + title + '">' + text + '</a>'
+  );
+});
+
+function checkins_count(track) {
+  var room_checkins = checkins['#' + track];
+  return room_checkins ? Object.keys(room_checkins).length : 0;
+}
+
 function checkins_tooltip(track) {
   var room_checkins = checkins['#' + track];
   if (room_checkins) {

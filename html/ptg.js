@@ -10,13 +10,14 @@ Handlebars.registerHelper('trackContentLine', function(options) {
   for (var i = 0; i < words.length; i++) {
     if (words[i].startsWith("#")) {
         sentence += '<span class="label label-info">'
-          + words[i].substring(1) + '</span> ';
+          + words[i].substring(1) + '</span>';
     } else if (words[i].match(/^https?:\/\//)) {
         sentence += '<a href="' + words[i] + '">'
           + words[i] + '</a>';
     } else {
-        sentence += words[i] + " ";
+        sentence += words[i];
     }
+    sentence += ' ';
   }
   return new Handlebars.SafeString(sentence);
 });

@@ -32,6 +32,31 @@ Handlebars.registerHelper('roomactive',
   return false;
 });
 
+function checkins_tooltip(track) {
+  var room_checkins = checkins['#' + track];
+  if (room_checkins) {
+    var attendees = room_checkins.map(function(checkin) {
+      return checkin.nick;
+    }).sort();
+    return 'Checked in here: ' + attendees.join(", ");
+  } else {
+    return "No one is checked in here. " +
+      "DM the bot 'in #" + track + "' to check in.";
+  }
+}
+
+function track_badge(track) {
+  var title = checkins_tooltip(track);
+  return '<span class="label label-primary ' +
+    track +
+    '" title="' + title + '">' + track;
+}
+
+Handlebars.registerHelper('trackbadge',
+                          function(track) {
+  return new Handlebars.SafeString(track_badge(track));
+});
+
 Handlebars.registerHelper('roomcode',
                           function(schedule, room, timecode, s) {
   var cell = '';
@@ -43,19 +68,7 @@ Handlebars.registerHelper('roomcode',
         cell = '<small><i>' + room + "-" + timecode + '</i></small>';
       }
     } else {
-      var track = schedule[room][timecode];
-      var room_checkins = checkins['#' + track];
-      var title = "No one is checked in here. " +
-          "DM the bot 'in #" + track + "' to check in.";
-      if (room_checkins) {
-        var attendees = room_checkins.map(function(checkin) {
-          return checkin.nick;
-        }).sort();
-        title = 'Checked in here: ' + attendees.join(", ");
-      }
-      cell = '<span class="label label-primary ' +
-              track +
-             '" title="' + title + '">' + track;
+      cell = track_badge(schedule[room][timecode]);
     }
   }
   return new Handlebars.SafeString(cell);

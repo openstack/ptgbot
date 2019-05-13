@@ -33,20 +33,10 @@ Handlebars.registerHelper('roomactive',
 });
 
 Handlebars.registerHelper('checkins', function(track) {
-  var count = checkins_count(track);
-  var url = "https://opendev.org/openstack/ptgbot/src/branch/master/README.rst";
-  var text;
-  var title = "See below or click for how to check in/out";
-  if (count == 0) {
-    text = 'No check-ins';
-  } else {
-    text = count + ' check-in' + (count == 1 ? '' : 's');
-    title = checkins_tooltip(track) + ".\n\n" + title + '.';
-  }
-  return new Handlebars.SafeString(
-    '<a href="' + url + '" target="blank" class="checkins" title="'
-      + title + '">' + text + '</a>'
-  );
+  return checkins_count(track);
+});
+Handlebars.registerHelper('checkedin', function(track) {
+  return checkins_tooltip(track);
 });
 
 function checkins_count(track) {

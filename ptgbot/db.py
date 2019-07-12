@@ -188,9 +188,9 @@ class PTGDataBase():
         self.save()
 
     def new_day_cleanup(self):
-        self.data['now'] = {}
-        self.data['next'] = {}
-        self.data['location'] = {}
+        self.data['now'] = OrderedDict()
+        self.data['next'] = OrderedDict()
+        self.data['location'] = OrderedDict()
         self.clean_motd()
 
     def empty(self):

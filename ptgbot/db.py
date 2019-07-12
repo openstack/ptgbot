@@ -191,6 +191,7 @@ class PTGDataBase():
         self.data['now'] = OrderedDict()
         self.data['next'] = OrderedDict()
         self.data['location'] = OrderedDict()
+        self.data['last_check_in'] = OrderedDict()
         self.clean_motd()
 
     def empty(self):

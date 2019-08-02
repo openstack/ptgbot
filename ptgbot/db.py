@@ -28,10 +28,12 @@ class PTGDataBase():
             'slots': OrderedDict(),
             'now': OrderedDict(),
             'next': OrderedDict(),
+            'etherpads': OrderedDict(),
             'colors': OrderedDict(),
             'location': OrderedDict(),
             'schedule': OrderedDict(),
             'voice': 0,
+            'eventid': '',
             'motd': {'message': '', 'level': 'info'},
             'links': OrderedDict(),
             # Keys for last_check_in are lower-cased nicks;
@@ -78,6 +80,13 @@ class PTGDataBase():
             self.add_location(track, room)
         if track in self.data['next']:
             del self.data['next'][track]
+        self.save()
+
+    def add_etherpad(self, track, etherpad):
+        if etherpad == 'auto':
+            del(self.data['etherpads'][track])
+        else:
+            self.data['etherpads'][track] = etherpad
         self.save()
 
     def add_color(self, track, color):

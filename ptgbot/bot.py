@@ -311,6 +311,8 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                 self.notify(track, adverb, params)
             elif adverb == 'clean':
                 self.data.clean_tracks([track])
+            elif adverb == 'etherpad':
+                self.data.add_etherpad(track, params)
             elif adverb == 'color':
                 self.data.add_color(track, params)
             elif adverb == 'location':

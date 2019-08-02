@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="180">
+  <title>List of PTG Etherpads</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="bootstrap-3.3.7.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+<h2>List of PTG Etherpads</h2>
+<p>We use etherpads to track the agenda of topics that should be covered in
+each track.<p>
+<div id="PTGsessions">
+</div>
+</div>
+
+<script id="PTGtemplate" type="text/x-handlebars-template">
+<div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">Etherpad links</h3></div>
+  <div class="panel-body">
+  {{#if eventid}}
+    <ul class="list-unstyled">
+      {{#each tracks as |track| }}
+        <li>{{track}}:
+        {{#if (lookup @root.etherpads track) }}
+          <a href="{{lookup @root.etherpads track}}">{{lookup @root.etherpads track}}</a>
+        {{else}}
+          <a href="https://etherpad.openstack.org/p/{{@root.eventid}}-{{track}}">https://etherpad.openstack.org/p/{{@root.eventid}}-{{track}}</a>
+        {{/if}}
+        </li>
+      {{/each}}
+    </ul>
+  {{else}}
+    Missing eventid: can't generate unique etherpad links for this event.
+  {{/if}}
+  </div>
+</div>
+</script>
+
+<script src="jquery-1.9.1.min.js"></script>
+<script src="handlebars-4.0.6.js"></script>
+<script src="bootstrap-3.3.7.min.js"></script>
+<script src="ptg.js"></script>
+</body>
+</html>

@@ -102,7 +102,9 @@
       </tr></thead>
      {{#each @root.schedule as |sched room|}}
      {{#if (roomactive @root.schedule room times)}}
-     <tr><td>{{room}}</td>
+     <tr><td>{{room}}{{#if sched.cap_icon}}
+         <span class="glyphicon glyphicon-{{sched.cap_icon}}"
+               title="{{sched.cap_desc}}"></span>{{/if}}</td>
       {{#each (lookup @root.slots day) as |time|}}
       <td>{{ roomcode @root.schedule room time.name 0 }}</td>
       {{/each}}

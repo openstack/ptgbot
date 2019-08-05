@@ -62,7 +62,9 @@ class PTGDataBase():
         # Add tracks mentioned in configuration that are not in track list
         for room, bookings in self.data['schedule'].items():
             for time, track in bookings.items():
-                if track not in self.data['tracks']:
+                if time in ['cap_icon', 'cap_desc']:
+                    continue
+                if track and track not in self.data['tracks']:
                     self.add_tracks([track])
 
         self.colorize()

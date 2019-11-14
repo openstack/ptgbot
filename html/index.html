@@ -2,31 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Quick PTG Resources</title>
+  <title>Project Teams Gathering - Useful links</title>
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="bootstrap-3.3.7.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
 
 <div class="container">
-<h2>Quick PTG Resources</h2>
-<p>Follow links to useful sites for the Project Teams Gathering.</p>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header navbar-brand"><img src="/logo.png"></div>
+    <div class="navbar-header navbar-brand">Project Teams Gathering</div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="ptg.html">Currently at the PTG</a></li>
+        <li><a href="etherpads.html">List of Etherpads</a></li>
+        <li class="active"><a href="index.html">Useful links</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<script id="MOTDTemplate" type="text/x-handlebars-template">
+{{#if motd.message}}
+<div class="alert alert-{{motd.level}}" role="alert">{{motd.message}}</div>
+{{/if}}
+</script>
+<div id="MOTD"></div>
+
+<p>Follow links to useful resources for the Project Teams Gathering.</p>
 <script id="LinksTemplate" type="text/x-handlebars-template">
 {{#each links as |url title|}}
-<li><a href="{{ url }}">{{ title }}</a></li>
+<li class="list-group-item"><a href="{{ url }}">{{ title }}</a></li>
 {{/each}}
 </script>
-<ul>
-<li><a href="https://www.openstack.org/ptg/">event details, overall schedule, travel info, FAQs</a></li>
-<li><a href="ptg.html">current/next topics and room schedule</a></li>
-<li><a href="etherpads.html">reference list of track etherpads</a></li>
-<li><a href="https://opendev.org/openstack/ptgbot/src/branch/master/README.rst">instructions for interacting with the IRC bot</a></li>
-<div id="ExtraLinks"></div>
+
+<ul class="list-group">
+  <li class="list-group-item"><a href="https://www.openstack.org/ptg/">Event details, overall schedule, travel info, FAQs</a></li>
+  <li class="list-group-item"><a href="https://opendev.org/openstack/ptgbot/src/branch/master/README.rst">Instructions for interacting with the IRC bot</a></li>
+  <div id="ExtraLinks"></div>
 </ul>
 </div>
 
 <script src="jquery-1.9.1.min.js"></script>
 <script src="handlebars-4.0.6.js"></script>
+<script src="motd.js"></script>
 <script src="index.js"></script>
 </body>
 </html>

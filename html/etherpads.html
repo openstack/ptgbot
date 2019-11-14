@@ -3,13 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="refresh" content="180">
-  <title>List of PTG Etherpads</title>
+  <title>Project Teams Gathering - List of Etherpads</title>
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="bootstrap-3.3.7.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
 <div class="container">
-<h2>List of PTG Etherpads</h2>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header navbar-brand"><img src="/logo.png"></div>
+    <div class="navbar-header navbar-brand">Project Teams Gathering</div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="ptg.html">Currently at the PTG</a></li>
+        <li class="active"><a href="etherpads.html">List of Etherpads</a></li>
+        <li><a href="index.html">Useful links</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<script id="MOTDTemplate" type="text/x-handlebars-template">
+{{#if motd.message}}
+<div class="alert alert-{{motd.level}}" role="alert">{{motd.message}}</div>
+{{/if}}
+</script>
+<div id="MOTD"></div>
+
 <p>We use etherpads to track the agenda of topics that should be covered in
 each track.<p>
 <div id="PTGsessions">
@@ -43,6 +62,7 @@ each track.<p>
 <script src="jquery-1.9.1.min.js"></script>
 <script src="handlebars-4.0.6.js"></script>
 <script src="bootstrap-3.3.7.min.js"></script>
+<script src="motd.js"></script>
 <script src="ptg.js"></script>
 </body>
 </html>

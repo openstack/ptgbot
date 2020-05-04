@@ -313,6 +313,8 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                 self.data.clean_tracks([track])
             elif adverb == 'etherpad':
                 self.data.add_etherpad(track, params)
+            elif adverb == 'url':
+                self.data.add_url(track, params)
             elif adverb == 'color':
                 self.data.add_color(track, params)
             elif adverb == 'location':

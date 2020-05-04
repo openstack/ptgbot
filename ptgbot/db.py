@@ -36,6 +36,7 @@ class PTGDataBase():
             'eventid': '',
             'motd': {'message': '', 'level': 'info'},
             'links': OrderedDict(),
+            'urls': OrderedDict(),
             # Keys for last_check_in are lower-cased nicks;
             # values are in the same format as BASE_CHECK_IN
             'last_check_in': OrderedDict(),
@@ -64,7 +65,7 @@ class PTGDataBase():
         # Add tracks mentioned in configuration that are not in track list
         for room, bookings in self.data['schedule'].items():
             for time, track in bookings.items():
-                if time in ['cap_icon', 'cap_desc']:
+                if time in ['cap_icon', 'cap_desc', 'url']:
                     continue
                 if track and track not in self.data['tracks']:
                     self.add_tracks([track])
@@ -87,6 +88,13 @@ class PTGDataBase():
             del(self.data['etherpads'][track])
         else:
             self.data['etherpads'][track] = etherpad
+        self.save()
+
+    def add_url(self, track, url):
+        if url == 'none':
+            del(self.data['urls'][track])
+        else:
+            self.data['urls'][track] = url
         self.save()
 
     def add_color(self, track, color):

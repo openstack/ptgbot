@@ -154,6 +154,20 @@ pass ``auto`` as the etherpad URL::
 
   #keystone etherpad auto
 
+url
+---
+
+A URL can be associated to a track, for example pointing to where the video
+meeting happens. By default the bot points to the URL associated to the room,
+if any. You can override it using the ``url`` command::
+
+  #keystone url https://meet.jit.si/awesome-keystone-meeting
+
+If you set a track-specific URL and would like to remove it, you can pass
+``none`` as the URL::
+
+  #keystone url none
+
 color
 -----
 
@@ -244,7 +258,7 @@ Join that channel and load base JSON data from a public URL (see base.json
 for an example). You can use the pastebin service as a quick way to publish
 that data::
 
-  ~fetchdb http://paste.openstack.org/raw/793036/
+  ~fetchdb http://paste.openstack.org/raw/793040/
 
 Then you can give other commands to the bot, like::
 

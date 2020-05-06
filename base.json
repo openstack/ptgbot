@@ -9,6 +9,7 @@
     "slots": {
         "Monday": [
             {
+                "realtime": "2020-06-01T09:00:00Z",
                 "desc": "09:00-10:45",
                 "name": "MonA1"
             },

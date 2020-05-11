@@ -240,9 +240,14 @@ In one terminal, run the bot::
 
   tox -evenv -- ptgbot -d config.json
 
-Join that channel and give commands to the bot::
+Join that channel and load base JSON data from a public URL (see base.json
+for an example). You can use the pastebin service as a quick way to publish
+that data::
 
-  ~fetchdb http://paste.openstack.org/raw/755522/
+  ~fetchdb http://paste.openstack.org/raw/793036/
+
+Then you can give other commands to the bot, like::
+
   #swift now discussing ring placement
 
 (note, the bot currently only takes commands from Freenode identified users)

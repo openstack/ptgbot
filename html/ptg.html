@@ -53,7 +53,7 @@
   {{#each tracks as |track| }}
   {{#if (lookup @root.now track) }}
     <tr>
-      <td class="col-sm-1">{{trackbadge track}}</span></td>
+      <td class="col-sm-1">{{trackbadge @root.urls @root.location @root.schedule track}}</span></td>
       <td>{{#trackContentLine}}{{lookup @root.now track}}{{/trackContentLine}}</td>
       <td>{{lookup @root.location track}}
           {{#if (checkins track)}}
@@ -80,7 +80,7 @@
   {{#each tracks as |track| }}
   {{#if (lookup @root.next track) }}
   <tr>
-    <td class="col-sm-1">{{trackbadge track}}</span></td>
+    <td class="col-sm-1">{{trackbadge @root.urls @root.location @root.schedule track}}</span></td>
     <td>
       {{#each (lookup @root.next track) as |item|}}
       {{#trackContentLine}}{{item}}{{/trackContentLine}} <br/>
@@ -121,7 +121,7 @@
          <span class="glyphicon glyphicon-{{sched.cap_icon}}"
                title="{{sched.cap_desc}}"></span>{{/if}}</td>
       {{#each (lookup @root.slots day) as |time|}}
-      <td>{{ roomcode @root.schedule room time.name 0 }}</td>
+      <td>{{ roomcode @root.urls @root.schedule room time.name 0 }}</td>
       {{/each}}
      </tr>
      {{/if}}

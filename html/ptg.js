@@ -57,20 +57,31 @@ function checkins_tooltip(track) {
   }
 }
 
-function track_badge(track) {
+function track_badge(track, roomurl) {
   var title = checkins_tooltip(track);
+  if (roomurl != undefined) {
+    return '<a target="_blank" href="' + roomurl +
+    '" class="label label-primary ' +
+    track +
+    '" title="' + title + '">' + track;
+  }
   return '<span class="label label-primary ' +
     track +
     '" title="' + title + '">' + track;
 }
 
 Handlebars.registerHelper('trackbadge',
-                          function(track) {
-  return new Handlebars.SafeString(track_badge(track));
+                          function(urls, locations, schedule, track) {
+  if (urls[track] != undefined) {
+    roomurl = urls[track];
+  } else {
+    roomurl = schedule[locations[track]]['url'];
+  }
+  return new Handlebars.SafeString(track_badge(track, roomurl));
 });
 
 Handlebars.registerHelper('roomcode',
-                          function(schedule, room, timecode, s) {
+                          function(urls, schedule, room, timecode, s) {
   var cell = '';
   if (schedule[room][timecode] != undefined) {
     if (schedule[room][timecode] == "") {
@@ -80,7 +91,12 @@ Handlebars.registerHelper('roomcode',
         cell = '<small><i>' + room + "-" + timecode + '</i></small>';
       }
     } else {
-      cell = track_badge(schedule[room][timecode]);
+      if (urls[schedule[room][timecode]] != undefined) {
+          url = urls[schedule[room][timecode]];
+      } else {
+          url = schedule[room]['url']
+      }
+      cell = track_badge(schedule[room][timecode], url);
     }
   }
   return new Handlebars.SafeString(cell);

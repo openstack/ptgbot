@@ -112,7 +112,7 @@
      <table class="table table-condensed">
       <thead><tr><th></th>
       {{#each times as |time|}}
-        <th>{{time.desc}}</th>
+        <th>{{ displaytime time }}</th>
       {{/each}}
       </tr></thead>
      {{#each @root.schedule as |sched room|}}

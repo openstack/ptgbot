@@ -102,10 +102,27 @@ Handlebars.registerHelper('roomcode',
   return new Handlebars.SafeString(cell);
 });
 
+Handlebars.registerHelper('displaytime',
+                          function(time) {
+  if (time['realtime'] != undefined) {
+    var t = new Date(time['realtime']);
+    content = '<a target="_blank" href="' +
+        'https://www.timeanddate.com/worldclock/fixedtime.html?iso=' +
+        time['realtime'] + '" title="' + t + '">' +
+        time['desc'] +'</a>';
+  } else {
+    content = time['desc'];
+  }
+  return new Handlebars.SafeString(content);
+});
+
+
 // What is the day today ?
+// Return Monday until Tuesday 1 UTC
 var now = new Date();
+now.setHours(now.getHours()-1);
 var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-var day = days[ now.getDay() ];
+var day = days[ now.getUTCDay() ];
 var checkins = {};
 
 $.getJSON("ptg.json", function(json) {

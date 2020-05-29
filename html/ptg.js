@@ -75,7 +75,11 @@ Handlebars.registerHelper('trackbadge',
   if (urls[track] != undefined) {
     roomurl = urls[track];
   } else {
-    roomurl = schedule[locations[track]]['url'];
+    if (locations[track] != undefined) {
+        roomurl = schedule[locations[track]]['url'];
+    } else {
+        roomurl = undefined;
+    }
   }
   return new Handlebars.SafeString(track_badge(track, roomurl));
 });

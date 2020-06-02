@@ -96,6 +96,9 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
         nick = e.source.split('!')[0]
         msg = e.arguments[0][1:]
         words = msg.split()
+        if len(words) < 1:
+            self.log.debug("Ignoring privmsg with no content")
+            return
         cmd = words[0].lower()
         words.pop(0)
 

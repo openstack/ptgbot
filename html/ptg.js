@@ -61,7 +61,7 @@ function track_badge(track, roomurl) {
   var title = checkins_tooltip(track);
   if (roomurl != undefined) {
     return '<a target="_blank" href="' + roomurl +
-    '" class="label label-primary ' +
+    '" class="btn btn-xs btn-primary ' +
     track +
     '" title="' + title + '">' + track;
   }

@@ -120,6 +120,19 @@ Handlebars.registerHelper('displaytime',
   return new Handlebars.SafeString(content);
 });
 
+// Grey out cell if current time matches the slot hour
+Handlebars.registerHelper('activetime',
+                          function(time) {
+  if (time['realtime'] != undefined) {
+    var t = new Date(time['realtime']);
+    var now = new Date();
+    var diff = now.getTime() - t.getTime();
+    if (diff > 0 && diff < (1000*60*60)) {
+        return new Handlebars.SafeString('style="background-color: #eeeeee"');
+    }
+  }
+  return new Handlebars.SafeString('');
+});
 
 // What is the day today ?
 // Return Monday until Tuesday 1 UTC

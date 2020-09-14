@@ -112,7 +112,7 @@
      <table class="table table-condensed">
       <thead><tr><th></th>
       {{#each times as |time|}}
-        <th>{{ displaytime time }}</th>
+        <th {{ activetime time }}>{{ displaytime time }}</th>
       {{/each}}
       </tr></thead>
      {{#each @root.schedule as |sched room|}}
@@ -121,7 +121,7 @@
          <span class="glyphicon glyphicon-{{sched.cap_icon}}"
                title="{{sched.cap_desc}}"></span>{{/if}}</td>
       {{#each (lookup @root.slots day) as |time|}}
-      <td>{{ roomcode @root.urls @root.schedule room time.name 0 }}</td>
+      <td {{ activetime time }}">{{ roomcode @root.urls @root.schedule room time.name 0 }}</td>
       {{/each}}
      </tr>
      {{/if}}

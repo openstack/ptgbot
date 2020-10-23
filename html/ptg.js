@@ -60,6 +60,7 @@ function checkins_tooltip(track) {
 function track_badge(track, roomurl) {
   var title = checkins_tooltip(track);
   if (roomurl != undefined) {
+    title = "Click here to join the meeting";
     return '<a target="_blank" href="' + roomurl +
     '" class="btn btn-xs btn-primary ' +
     track +

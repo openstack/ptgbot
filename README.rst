@@ -186,7 +186,9 @@ location
 
 The room your track discussions happen in should be filled automatically
 by the PTGbot by looking up the schedule information. In case it's not right,
-you can overwrite it using the ``location`` command. Example usage::
+you can overwrite it using the ``location`` command. This command is
+useless in a virtual PTG, where you should use the "url" command to update
+the virtual meeting location. Example usage::
 
   #oslo location Level B, Ballroom A
 

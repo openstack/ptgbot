@@ -77,7 +77,11 @@ Handlebars.registerHelper('trackbadge',
     roomurl = urls[track];
   } else {
     if (locations[track] != undefined) {
-        roomurl = schedule[locations[track]]['url'];
+        if (schedule[locations[track]] != undefined) {
+            roomurl = schedule[locations[track]]['url'];
+        } else {
+            roomurl = undefined;
+        }
     } else {
         roomurl = undefined;
     }

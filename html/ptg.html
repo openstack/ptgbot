@@ -55,7 +55,7 @@
     <tr>
       <td class="col-sm-1">{{trackbadge @root.urls @root.location @root.schedule track}}</span></td>
       <td>{{#trackContentLine}}{{lookup @root.now track}}{{/trackContentLine}}</td>
-      <td>{{lookup @root.location track}}
+      <td>
           {{#if (checkins track)}}
             <a href="#" title="{{checkedin track}}">
              <span class="badge">{{checkins track}}</span>

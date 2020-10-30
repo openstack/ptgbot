@@ -85,7 +85,8 @@ class PTGDataBase():
 
     def add_etherpad(self, track, etherpad):
         if etherpad == 'auto':
-            del(self.data['etherpads'][track])
+            if track in self.data['etherpads']:
+                del(self.data['etherpads'][track])
         else:
             self.data['etherpads'][track] = etherpad
         self.save()

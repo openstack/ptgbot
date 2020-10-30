@@ -92,7 +92,8 @@ class PTGDataBase():
 
     def add_url(self, track, url):
         if url == 'none':
-            del(self.data['urls'][track])
+            if track in self.data['urls']:
+                del(self.data['urls'][track])
         else:
             self.data['urls'][track] = url
         self.save()

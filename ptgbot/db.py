@@ -34,7 +34,7 @@ class PTGDataBase():
             'schedule': OrderedDict(),
             'voice': 0,
             'eventid': '',
-            'motd': {'message': '', 'level': 'info'},
+            'motd': [],
             'links': OrderedDict(),
             'urls': OrderedDict(),
             # Keys for last_check_in are lower-cased nicks;
@@ -53,6 +53,13 @@ class PTGDataBase():
         if os.path.isfile(self.filename):
             with open(self.filename, 'r') as fp:
                 self.data = json.load(fp, object_pairs_hook=OrderedDict)
+
+            # Migrate from old format where motd was a single-message dict
+            if isinstance(self.data['motd'], dict):
+                if self.data['motd']['message']:
+                    self.data['motd'] = [self.data['motd']]
+                else:
+                    self.data['motd'] = []
         else:
             self.data = copy.deepcopy(self.BASE)
 
@@ -221,11 +228,11 @@ class PTGDataBase():
 
     def motd(self, level, message):
         if level in ['info', 'success', 'warning', 'danger']:
-            self.data['motd'] = {'level': level, 'message': message}
+            self.data['motd'] = [{'level': level, 'message': message}]
             self.save()
 
     def clean_motd(self):
-        self.data['motd'] = {'level': '', 'message': ''}
+        self.data['motd'] = []
         self.save()
 
     def _blank_check_in(self):

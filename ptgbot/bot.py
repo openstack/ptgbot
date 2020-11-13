@@ -371,13 +371,73 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                     self.send(chan, "Error loading DB: %s" % e)
             elif command == 'newday':
                 self.data.new_day_cleanup()
+
             elif command == 'motd':
-                if len(words) < 3:
-                    self.send(chan, "Not enough params (~motd LEVEL MESSAGE)")
+                if len(words) < 2:
+                    self.send(
+                        chan,
+                        "Missing subcommand (~motd add|del|clean|reorder ...)"
+                    )
                     return
-                self.data.motd(words[1], str.join(' ', words[2:]))
-            elif command == 'cleanmotd':
-                self.data.clean_motd()
+                if words[1] == "add":
+                    if len(words) < 4:
+                        self.send(
+                            chan,
+                            "Missing parameters (~motd add LEVEL MSG)"
+                        )
+                        return
+                    if words[2] not in [
+                        'info', 'success', 'warning', 'danger'
+                    ]:
+                        self.send(
+                            chan,
+                            "Incorrect message level '%s' (should be info, "
+                            "success, warning or danger)" % words[2]
+                        )
+                        return
+                    self.data.motd_add(words[2], str.join(' ', words[3:]))
+                elif words[1] == "del":
+                    if len(words) < 3:
+                        self.send(
+                            chan,
+                            "Missing message number (~motd del NUM)"
+                        )
+                        return
+                    if not self.data.motd_has(words[2]):
+                        self.send(
+                            chan,
+                            "Incorrect message number %s" % words[2]
+                        )
+                        return
+                    self.data.motd_del(words[2])
+                elif words[1] == "clean":
+                    if len(words) > 2:
+                        self.send(
+                            chan,
+                            "'~motd clean' does not take parameters"
+                        )
+                        return
+                    self.data.motd_clean()
+                elif words[1] == "reorder":
+                    if len(words) < 3:
+                        self.send(
+                            chan,
+                            "Missing params (~motd reorder X Y...)"
+                        )
+                        return
+                    order = []
+                    for num in words[2:]:
+                        if not self.data.motd_has(num):
+                            self.send(
+                                chan,
+                                "Incorrect message number %s" % num
+                            )
+                            return
+                        order.append(num)
+                    self.data.motd_reorder(order)
+                else:
+                    self.send(chan, "Unknown motd subcommand %s" % words[1])
+
             elif command == 'requirevoice':
                 self.data.require_voice()
             elif command == 'alloweveryone':

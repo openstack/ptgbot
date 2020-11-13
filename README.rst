@@ -214,12 +214,19 @@ You have to be a channel operator (+o) to use admin commands.
   Removes existing now/next/location/presence entries. This command is
   meant to be run at the start of a new day
 
-~motd LEVEL MESSAGE
+~motd add LEVEL MESSAGE
   Adds a message of the day on top of the rendered page. Level must be one of
-  info, success, warning or danger.
+  info, success, warning or danger. Multiple messages can be provided.
 
-~cleanmotd
-  Removes message of the day on top of the rendered page.
+~motd del N
+  Removes Nth message from the top of the page (first message is number 1).
+
+~motd reorder X Y...
+  Reorder messages. For example, ~motd reorder 2 1 would swap the top two
+  messages, and remove any other message present.
+
+~motd clean
+  Removes all messages of the day on top of the rendered page.
 
 ~emptydb
   Resets the database entirely to minimal contents

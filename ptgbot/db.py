@@ -220,19 +220,36 @@ class PTGDataBase():
         self.data['next'] = OrderedDict()
         self.data['location'] = OrderedDict()
         self.data['last_check_in'] = OrderedDict()
-        self.clean_motd()
+        self.save()
 
     def empty(self):
         self.data = copy.deepcopy(self.BASE)
         self.save()
 
-    def motd(self, level, message):
-        if level in ['info', 'success', 'warning', 'danger']:
-            self.data['motd'] = [{'level': level, 'message': message}]
-            self.save()
+    def motd_has(self, num):
+        try:
+            n = int(num)
+            return n > 0 and len(self.data['motd']) >= n
+        except ValueError:
+            return False
 
-    def clean_motd(self):
+    def motd_add(self, level, message):
+        self.data['motd'].append({'level': level, 'message': message})
+        self.save()
+
+    def motd_del(self, num):
+        del(self.data['motd'][int(num) - 1])
+        self.save()
+
+    def motd_clean(self):
         self.data['motd'] = []
+        self.save()
+
+    def motd_reorder(self, order):
+        new = []
+        for index in order:
+            new.append(self.data['motd'][int(index) - 1])
+        self.data['motd'] = new
         self.save()
 
     def _blank_check_in(self):

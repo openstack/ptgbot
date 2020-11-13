@@ -48,6 +48,17 @@ ANTI_FLOOD_SLEEP = 2
 DOC_URL = 'https://opendev.org/openstack/ptgbot/src/branch/master/README.rst'
 
 
+def make_safe(func):
+    def inner(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except Exception as e:
+            msg = "Bot airbag activated: " + str(e)
+            args[0].log.error(msg)
+            args[0].send(args[0].channel, msg)
+    return inner
+
+
 class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
     log = logging.getLogger("ptgbot.bot")
 
@@ -88,6 +99,7 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
         else:
             self.send(channel, "There are no active tracks defined yet")
 
+    @make_safe
     def on_privmsg(self, c, e):
         if not self.identify_msg_cap:
             self.log.debug("Ignoring message because identify-msg "
@@ -252,6 +264,7 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                 "Cancelled subscription %s" % existing_re
             )
 
+    @make_safe
     def on_pubmsg(self, c, e):
         if not self.identify_msg_cap:
             self.log.debug("Ignoring message because identify-msg "

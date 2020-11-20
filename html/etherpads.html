@@ -24,7 +24,7 @@
 </nav>
 <script id="MOTDTemplate" type="text/x-handlebars-template">
 {{#each motd}}
-<div class="alert alert-{{this.level}}" role="alert">{{this.message}}</div>
+<div class="alert alert-{{this.level}}" role="alert">{{ linkify this.message }}</div>
 {{/each}}
 </script>
 <div id="MOTD"></div>

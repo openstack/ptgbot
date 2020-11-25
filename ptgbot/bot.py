@@ -264,6 +264,13 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                 "Cancelled subscription %s" % existing_re
             )
 
+    def is_chanop(self, nick, chan):
+        return self.channels[chan].is_oper(nick)
+
+    def is_voiced(self, nick, chan):
+        return (self.channels[chan].is_voiced(nick) or
+                self.channels[chan].is_oper(nick))
+
     @make_safe
     def on_pubmsg(self, c, e):
         if not self.identify_msg_cap:
@@ -295,9 +302,8 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                 self.unsubscribe(chan, nick)
                 return
 
-            if (self.data.is_voice_required() and not
-                    (self.channels[chan].is_voiced(nick) or
-                     self.channels[chan].is_oper(nick))):
+            if (self.data.is_voice_required() and
+                    not self.is_voiced(nick, chan)):
                 self.send(chan, "%s: Need voice to issue commands" % (nick,))
                 return
 
@@ -367,7 +373,7 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                               "scheduled today." % (nick, track))
 
         if msg.startswith('~'):
-            if not self.channels[chan].is_oper(nick):
+            if not self.is_chanop(nick, chan):
                 self.send(chan, "%s: Need op for admin commands" % (nick,))
                 return
             words = msg.split()

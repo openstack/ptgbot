@@ -54,7 +54,7 @@ def make_safe(func):
             func(*args, **kwargs)
         except Exception as e:
             msg = "Bot airbag activated: " + str(e)
-            args[0].log.error(msg)
+            args[0].log.error(msg, exc_info=True)
             args[0].send(args[0].channel, msg)
     return inner
 

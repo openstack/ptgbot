@@ -469,7 +469,7 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                     return
                 getattr(self.data, command + '_tracks')(words[1:])
             else:
-                self.send(chan, "%s: unknown command '%s'" % (nick, command))
+                self.send(chan, "Unknown command '%s'" % command)
                 return
 
     def notify(self, track, adverb, params):

@@ -47,8 +47,9 @@ class PTGDataBase():
         'location': None, 'in': None, 'out': None
     }
 
-    def __init__(self, config):
+    def __init__(self, config, write_to_disk=True):
         self.filename = config['db_filename']
+        self.write_to_disk = write_to_disk
 
         if os.path.isfile(self.filename):
             with open(self.filename, 'r') as fp:
@@ -304,8 +305,9 @@ class PTGDataBase():
         timestamp = datetime.datetime.now()
         self.data['timestamp'] = self.serialise_timestamp(timestamp)
         self.data['tracks'] = sorted(self.data['tracks'])
-        with open(self.filename, 'w') as fp:
-            json.dump(self.data, fp)
+        if self.write_to_disk:
+            with open(self.filename, 'w') as fp:
+                json.dump(self.data, fp)
 
     def serialise_timestamp(self, timestamp):
         return '{:%Y-%m-%d %H:%M:%S}'.format(timestamp)

@@ -264,6 +264,205 @@ class TestProcessMessage(testtools.TestCase):
                 )
                 mock_send.reset_mock()
 
+    def test_user_commands_parameters(self):
+        responses = {
+            'in': "The 'in' command should be followed by a location.",
+            'out s': "The 'out' command does not accept any extra parameters.",
+            'seen': "The 'seen' command needs a single nick argument.",
+            'seen foo bar': "The 'seen' command needs a single nick argument.",
+            'subscribe ***': "Invalid regex: nothing to repeat at position 0",
+            'foo': "Recognised commands: in, out, seen, subscribe",
+        }
+        original_db_data = copy.deepcopy(self.db.data)
+        with mock.patch.object(
+            self.bot, 'send',
+        ) as mock_send:
+            for cmd, response in responses.items():
+                msg = Event('',
+                            'johndoe!~johndoe@openstack/member/johndoe',
+                            '',
+                            ['+' + cmd])
+                self.bot.on_privmsg('', msg)
+                mock_send.assert_called_with(
+                    'johndoe',
+                    response
+                )
+                self.assertEqual(self.db.data, original_db_data)
+                mock_send.reset_mock()
+
+    def test_user_command_in_pubmsg(self):
+        commands = ['#seen dahu']
+        for command in commands:
+            msg = Event('',
+                        'johndoe!~johndoe@openstack/member/johndoe',
+                        '#channel',
+                        ['+' + command])
+            with mock.patch.object(
+                self.bot, 'send',
+            ) as mock_send:
+                self.bot.on_pubmsg('', msg)
+                mock_send.assert_called_with(
+                    '#channel',
+                    'johndoe: dahu never checked in anywhere'
+                )
+                mock_send.reset_mock()
+
+    def test_in_seen_out(self):
+        with mock.patch.object(
+            self.bot, 'send',
+        ) as mock_send:
+            msg = Event('',
+                        'janedoe!~janedoe@openstack/member/janedoe',
+                        '',
+                        ['+seen johndoe'])
+            self.bot.on_privmsg('', msg)
+            mock_send.assert_called_with(
+                'janedoe',
+                "johndoe never checked in anywhere"
+            )
+            mock_send.reset_mock()
+            msg = Event('',
+                        'johndoe!~johndoe@openstack/member/johndoe',
+                        '',
+                        ['+in swift'])
+            self.bot.on_privmsg('', msg)
+            mock_send.assert_called_with(
+                'johndoe',
+                'OK, checked into #swift - thanks for the update!'
+            )
+            self.assertEqual(
+                self.db.data['last_check_in']['johndoe']['location'],
+                '#swift'
+            )
+            mock_send.reset_mock()
+            msg = Event('',
+                        'janedoe!~janedoe@openstack/member/janedoe',
+                        '',
+                        ['+seen johndoe'])
+            self.bot.on_privmsg('', msg)
+            mock_send.assert_called_with(
+                'janedoe',
+                "johndoe was last seen in #swift at " +
+                self.db.data['last_check_in']['johndoe']['in']
+            )
+            mock_send.reset_mock()
+            msg = Event('',
+                        'johndoe!~johndoe@openstack/member/johndoe',
+                        '',
+                        ['+out'])
+            self.bot.on_privmsg('', msg)
+            mock_send.assert_called_with(
+                'johndoe',
+                'OK, checked out of #swift - thanks for the update!'
+            )
+            mock_send.reset_mock()
+            msg = Event('',
+                        'janedoe!~janedoe@openstack/member/janedoe',
+                        '',
+                        ['+seen johndoe'])
+            self.bot.on_privmsg('', msg)
+            mock_send.assert_called_with(
+                'janedoe',
+                "johndoe checked out of #swift at " +
+                self.db.data['last_check_in']['johndoe']['out']
+            )
+
+    def test_subscribe_notify_unsubscribe(self):
+        with mock.patch.object(
+            self.bot, 'send',
+        ) as mock_send:
+            msg = Event('',
+                        'johndoe!~johndoe@openstack/member/johndoe',
+                        '',
+                        ['+unsubscribe'])
+            self.bot.on_privmsg('', msg)
+            mock_send.assert_called_with(
+                'johndoe',
+                "You don't have a subscription regex set yet"
+            )
+            mock_send.reset_mock()
+            msg = Event('',
+                        'johndoe!~johndoe@openstack/member/johndoe',
+                        '',
+                        ['+subscribe'])
+            self.bot.on_privmsg('', msg)
+            mock_send.assert_called_with(
+                'johndoe',
+                "You don't have a subscription regex set yet"
+            )
+            mock_send.reset_mock()
+            msg = Event('',
+                        'johndoe!~johndoe@openstack/member/johndoe',
+                        '',
+                        ['+subscribe swift'])
+            self.bot.on_privmsg('', msg)
+            mock_send.assert_called_with(
+                'johndoe',
+                "Subscription set to swift"
+            )
+            self.assertEqual(
+                self.db.data['subscriptions']['johndoe'],
+                'swift'
+            )
+            mock_send.reset_mock()
+            msg = Event('',
+                        'johndoe!~johndoe@openstack/member/johndoe',
+                        '',
+                        ['+subscribe'])
+            self.bot.on_privmsg('', msg)
+            mock_send.assert_called_with(
+                'johndoe',
+                "Your current subscription regex is: swift"
+            )
+            mock_send.reset_mock()
+            msg = Event('',
+                        'janedoe!~janedoe@openstack/member/janedoe',
+                        '#channel',
+                        ['+#nova now discussing with swift'])
+            self.bot.on_pubmsg('', msg)
+            mock_send.assert_called_with(
+                'johndoe',
+                "now in #nova (Ballroom A): discussing with swift"
+            )
+            mock_send.reset_mock()
+            msg = Event('',
+                        'johndoe!~johndoe@openstack/member/johndoe',
+                        '',
+                        ['+subscribe neutron'])
+            self.bot.on_privmsg('', msg)
+            mock_send.assert_called_with(
+                'johndoe',
+                'Subscription set to neutron (was swift)'
+            )
+            self.assertEqual(
+                self.db.data['subscriptions']['johndoe'],
+                'neutron'
+            )
+            mock_send.reset_mock()
+            msg = Event('',
+                        'janedoe!~janedoe@openstack/member/janedoe',
+                        '#channel',
+                        ['+#nova now continuing discussion with swift'])
+            self.bot.on_pubmsg('', msg)
+            self.assertFalse(mock_send.called)
+            mock_send.reset_mock()
+            msg = Event('',
+                        'johndoe!~johndoe@openstack/member/johndoe',
+                        '',
+                        ['+unsubscribe'])
+            self.bot.on_privmsg('', msg)
+            mock_send.assert_called_with(
+                'johndoe',
+                'Cancelled subscription neutron'
+            )
+            mock_send.reset_mock()
+            msg = Event('',
+                        'janedoe!~janedoe@openstack/member/janedoe',
+                        '#channel',
+                        ['+#neutron now doing swift things'])
+            self.bot.on_pubmsg('', msg)
+            self.assertFalse(mock_send.called)
+
     def test_admin_cmds_only_admins(self):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',

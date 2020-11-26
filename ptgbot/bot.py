@@ -21,12 +21,13 @@ from ib3.connection import SSL
 import irc.bot
 import json
 import logging.config
-import re
 import os
 import time
 import textwrap
 
 import ptgbot.db
+from ptgbot.admincommands import process_admin_command
+from ptgbot.trackcommands import process_track_command
 from ptgbot.usercommands import process_user_command
 
 
@@ -130,6 +131,35 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
         return (self.channels[chan].is_voiced(nick) or
                 self.channels[chan].is_oper(nick))
 
+    def handle_public_command(self, chan, nick, args):
+        words = args.split()
+        cmd = words[0].lower()
+
+        if len(cmd) > 1 and cmd[1:] == 'help':
+            return "See PTGbot documentation at: " + DOC_URL
+
+        if cmd.startswith('+'):
+            return process_user_command(self.data, nick, cmd[1:], words[1:])
+
+        if cmd.startswith('#'):
+
+            if cmd in ['#in', '#out', '#seen', '#subscribe', '#unsubscribe']:
+                return process_user_command(self.data, nick,
+                                            cmd[1:], words[1:])
+            else:
+                if (self.data.is_voice_required() and
+                        not self.is_voiced(nick, chan)):
+                    return "Need voice to issue commands"
+                track = words[0][1:].lower()
+                return process_track_command(self.data, self.send, track,
+                                             words[1:])
+
+        if cmd.startswith('~'):
+            if not self.is_chanop(nick, chan):
+                return "Need op for admin commands"
+            directive = words[0][1:].lower()
+            return process_admin_command(self.data, directive, words[1:])
+
     @make_safe
     def on_pubmsg(self, c, e):
         if not self.identify_msg_cap:
@@ -137,217 +167,13 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
                            "cap not enabled")
             return
         nick = e.source.split('!')[0]
-        msg = e.arguments[0][1:]
+        args = e.arguments[0][1:]
         chan = e.target
 
-        if msg.startswith('+'):
-            words = msg.split()
-            cmd = words[0].lower()[1:]
-            ret = process_user_command(self.data, nick, cmd, words[1:])
-            if ret:
-                self.send(chan, "%s: %s" % (nick, ret))
-
-        if msg.startswith('#'):
-            words = msg.split()
-            cmd = words[0].lower()
-
-            if cmd in ['#in', '#out', '#seen', '#subscribe', '#unsubscribe']:
-                cmd = cmd[1:]
-                ret = process_user_command(self.data, nick, cmd, words[1:])
-                if ret:
-                    self.send(chan, "%s: %s" % (nick, ret))
-                return
-
-            if (self.data.is_voice_required() and
-                    not self.is_voiced(nick, chan)):
-                self.send(chan, "%s: Need voice to issue commands" % (nick,))
-                return
-
-            if cmd == '#help':
-                self.usage(chan)
-                return
-
-            if ((len(words) < 2) or
-               (len(words) == 2 and words[1].lower() != 'clean')):
-                self.send(chan, "%s: Incorrect arguments" % (nick,))
-                self.usage(chan)
-                return
-
-            track = words[0][1:].lower()
-            if not self.data.is_track_valid(track):
-                self.send(chan, "%s: unknown track '%s'" % (nick, track))
-                self.send_track_list(chan)
-                return
-
-            adverb = words[1].lower()
-            params = str.join(' ', words[2:])
-            if adverb == 'now':
-                self.data.add_now(track, params)
-                self.notify(track, adverb, params)
-            elif adverb == 'next':
-                self.data.add_next(track, params)
-                self.notify(track, adverb, params)
-            elif adverb == 'clean':
-                self.data.clean_tracks([track])
-            elif adverb == 'etherpad':
-                self.data.add_etherpad(track, params)
-            elif adverb == 'url':
-                self.data.add_url(track, params)
-            elif adverb == 'color':
-                self.data.add_color(track, params)
-            elif adverb == 'location':
-                self.data.add_location(track, params)
-            elif adverb == 'book':
-                room, sep, timeslot = params.partition('-')
-                if self.data.is_slot_valid_and_empty(room, timeslot):
-                    self.data.book(track, room, timeslot)
-                    self.send(chan, "%s: Room %s is now booked on %s for %s" %
-                              (nick, room, timeslot, track))
-                else:
-                    self.send(chan, "%s: slot '%s' is invalid (or booked)" %
-                              (nick, params))
-            elif adverb == 'unbook':
-                room, sep, timeslot = params.partition('-')
-                if self.data.is_slot_booked_for_track(track, room, timeslot):
-                    self.data.unbook(room, timeslot)
-                    self.send(chan, "%s: Room %s (previously booked for %s) "
-                              "is now free on %s" %
-                              (nick, room, track, timeslot))
-                else:
-                    self.send(chan, "%s: slot '%s' is invalid "
-                              "(or not booked for %s)" %
-                              (nick, params, track))
-            else:
-                self.send(chan, "%s: unknown directive '%s'. "
-                          "Did you mean: %s now %s... ?" %
-                          (nick, adverb, track, adverb))
-                return
-            if adverb in ['now', 'next']:
-                if not self.data.get_track_room(track):
-                    self.send(chan, "%s: message added, but please note that "
-                              "track '%s' does not appear to have a room "
-                              "scheduled today." % (nick, track))
-
-        if msg.startswith('~'):
-            if not self.is_chanop(nick, chan):
-                self.send(chan, "%s: Need op for admin commands" % (nick,))
-                return
-            words = msg.split()
-            command = words[0][1:].lower()
-            if command == 'emptydb':
-                self.data.empty()
-            elif command == 'fetchdb':
-                url = words[1]
-                self.send(chan, "Loading DB from %s ..." % url)
-                try:
-                    self.data.import_json(url)
-                    self.send(chan, "Done.")
-                except Exception as e:
-                    self.send(chan, "Error loading DB: %s" % e)
-            elif command == 'newday':
-                self.data.new_day_cleanup()
-
-            elif command == 'motd':
-                if len(words) < 2:
-                    self.send(
-                        chan,
-                        "Missing subcommand (~motd add|del|clean|reorder ...)"
-                    )
-                    return
-                if words[1] == "add":
-                    if len(words) < 4:
-                        self.send(
-                            chan,
-                            "Missing parameters (~motd add LEVEL MSG)"
-                        )
-                        return
-                    if words[2] not in [
-                        'info', 'success', 'warning', 'danger'
-                    ]:
-                        self.send(
-                            chan,
-                            "Incorrect message level '%s' (should be info, "
-                            "success, warning or danger)" % words[2]
-                        )
-                        return
-                    self.data.motd_add(words[2], str.join(' ', words[3:]))
-                elif words[1] == "del":
-                    if len(words) < 3:
-                        self.send(
-                            chan,
-                            "Missing message number (~motd del NUM)"
-                        )
-                        return
-                    if not self.data.motd_has(words[2]):
-                        self.send(
-                            chan,
-                            "Incorrect message number %s" % words[2]
-                        )
-                        return
-                    self.data.motd_del(words[2])
-                elif words[1] == "clean":
-                    if len(words) > 2:
-                        self.send(
-                            chan,
-                            "'~motd clean' does not take parameters"
-                        )
-                        return
-                    self.data.motd_clean()
-                elif words[1] == "reorder":
-                    if len(words) < 3:
-                        self.send(
-                            chan,
-                            "Missing params (~motd reorder X Y...)"
-                        )
-                        return
-                    order = []
-                    for num in words[2:]:
-                        if not self.data.motd_has(num):
-                            self.send(
-                                chan,
-                                "Incorrect message number %s" % num
-                            )
-                            return
-                        order.append(num)
-                    self.data.motd_reorder(order)
-                else:
-                    self.send(chan, "Unknown motd subcommand %s" % words[1])
-
-            elif command == 'requirevoice':
-                self.data.require_voice()
-            elif command == 'alloweveryone':
-                self.data.allow_everyone()
-            elif command == 'list':
-                self.send_track_list(chan)
-            elif command in ('clean', 'add', 'del'):
-                if len(words) < 2:
-                    self.send(chan, "this command takes one or more arguments")
-                    return
-                getattr(self.data, command + '_tracks')(words[1:])
-            else:
-                self.send(chan, "Unknown command '%s'" % command)
-                return
-
-    def notify(self, track, adverb, params):
-        location = self.data.get_location(track)
-        track = '#' + track
-        trackloc = track
-        if location is not None:
-            trackloc = "%s (%s)" % (track, location)
-
-        for nick, regexp in self.data.get_subscriptions().items():
-            if regexp is None:
-                # Person did #unsubscribe, so skip
-                continue
-            event_text = " ".join([track, adverb, params])
-            if re.search(regexp, event_text, re.IGNORECASE):
-                message = "%s in %s: %s" % (adverb, trackloc, params)
-                # Note: there is no guarantee that nick will be online
-                # at this point.  However if not, the bot will receive
-                # a 401 :No such nick/channel message which it will
-                # ignore due to the lack of a nosuchnick handler.
-                # Fortunately this is the behaviour we want.
-                self.send(nick, message)
+        msg = self.handle_public_command(chan, nick, args)
+        if msg:
+            self.send(chan, ("%s: " % nick) + msg)
+        return
 
     def send(self, channel, msg):
         # 400 chars is an estimate of a safe line length (which can vary)

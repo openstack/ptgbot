@@ -60,7 +60,10 @@ class TestProcessMessage(testtools.TestCase):
             self.bot, 'send',
         ) as mock_send:
             self.bot.on_pubmsg('', msg)
-            mock_send.assert_called_with('#channel', "See doc at: " + DOC_URL)
+            mock_send.assert_called_with(
+                '#channel',
+                "johndoe: See PTGbot documentation at: " + DOC_URL,
+            )
 
     def test_invalidtrack(self):
         msg = Event('',
@@ -74,7 +77,7 @@ class TestProcessMessage(testtools.TestCase):
             self.bot.on_pubmsg('', msg)
             mock_send.assert_any_call(
                 '#channel',
-                "johndoe: unknown track 'svift'"
+                "johndoe: Unknown track 'svift'"
             )
 
     def test_now(self):
@@ -241,7 +244,7 @@ class TestProcessMessage(testtools.TestCase):
                 self.bot.on_pubmsg('', msg)
                 mock_send.assert_called_with(
                     '#channel',
-                    "johndoe: slot '%s' is invalid (or booked)" % slot
+                    "johndoe: Slot '%s' is invalid (or booked)" % slot
                 )
                 mock_send.reset_mock()
 
@@ -259,7 +262,7 @@ class TestProcessMessage(testtools.TestCase):
                 self.bot.on_pubmsg('', msg)
                 mock_send.assert_called_with(
                     '#channel',
-                    "johndoe: slot '%s' is invalid "
+                    "johndoe: Slot '%s' is invalid "
                     "(or not booked for swift)" % slot
                 )
                 mock_send.reset_mock()
@@ -492,7 +495,7 @@ class TestProcessMessage(testtools.TestCase):
             '~motd clean 2': "'~motd clean' does not take parameters",
             '~motd reorder': "Missing params (~motd reorder X Y...)",
             '~motd reorder 999': "Incorrect message number 999",
-            '~add': "this command takes one or more arguments",
+            '~add': "This command takes one or more arguments",
         }
         self.bot.is_chanop = mock.MagicMock(return_value=True)
         original_db_data = copy.deepcopy(self.db.data)
@@ -507,7 +510,7 @@ class TestProcessMessage(testtools.TestCase):
                 self.bot.on_pubmsg('', msg)
                 mock_send.assert_called_with(
                     '#channel',
-                    response
+                    "johndoe: " + response
                 )
                 self.assertEqual(self.db.data, original_db_data)
                 mock_send.reset_mock()

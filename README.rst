@@ -51,8 +51,8 @@ Anyone can privately message the bot with the following commands:
 
 * ``unsubscribe`` - cancels your current subscription (if any)
 
-The above commands also work in the channel when prefixed with ``#``,
-for example ``#in the pub``.  You can use the ``#`` prefix with
+The above commands also work in the channel when prefixed with ``+``,
+for example ``+in the pub``.  You can use the ``+`` prefix with
 private messages to the bot too, in case you don't want to memorise
 different syntax for these commands depending on whether you are
 messaging the bot privately or in a channel.

@@ -271,7 +271,8 @@ class TestProcessMessage(testtools.TestCase):
             'seen': "The 'seen' command needs a single nick argument.",
             'seen foo bar': "The 'seen' command needs a single nick argument.",
             'subscribe ***': "Invalid regex: nothing to repeat at position 0",
-            'foo': "Recognised commands: in, out, seen, subscribe",
+            'foo': "Unknown user command. "
+                   "Should be: in, out, seen, or subscribe",
         }
         original_db_data = copy.deepcopy(self.db.data)
         with mock.patch.object(
@@ -291,7 +292,7 @@ class TestProcessMessage(testtools.TestCase):
                 mock_send.reset_mock()
 
     def test_user_command_in_pubmsg(self):
-        commands = ['#seen dahu']
+        commands = ['#seen dahu', '+seen dahu']
         for command in commands:
             msg = Event('',
                         'johndoe!~johndoe@openstack/member/johndoe',

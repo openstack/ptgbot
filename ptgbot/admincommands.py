@@ -80,7 +80,7 @@ def process_admin_command(db, command, params):
     elif command in ('clean', 'add', 'del'):
         if len(params) < 1:
             return "This command takes one or more arguments"
-        getattr(db, command + '_tracks')(params[1:])
+        getattr(db, command + '_tracks')(params)
 
     else:
         return "Unknown command '%s'" % command

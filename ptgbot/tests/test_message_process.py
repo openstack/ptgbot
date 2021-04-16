@@ -515,6 +515,19 @@ class TestProcessMessage(testtools.TestCase):
                 self.assertEqual(self.db.data, original_db_data)
                 mock_send.reset_mock()
 
+    def test_add_track(self):
+        self.bot.is_chanop = mock.MagicMock(return_value=True)
+        with mock.patch.object(
+            self.bot, 'send',
+        ) as mock_send:
+            msg = Event('',
+                        'johndoe!~johndoe@openstack/member/johndoe',
+                        '#channel',
+                        ['+~add testtrack'])
+            self.bot.on_pubmsg('', msg)
+            self.assertTrue('testtrack' in self.db.data['tracks'])
+            mock_send.reset_mock()
+
     def test_motd(self):
         motdstates = [
             ('~motd add info foo bar', [

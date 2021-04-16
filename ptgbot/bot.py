@@ -133,6 +133,12 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
 
     def handle_public_command(self, chan, nick, args):
         words = args.split()
+
+        # Some messages are empty or only contain spaces.
+        # Do nothing in that case.
+        if not words:
+            return
+
         cmd = words[0].lower()
 
         if len(cmd) > 1 and cmd[1:] == 'help':

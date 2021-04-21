@@ -50,7 +50,7 @@ def process_admin_command(db, command, params):
                 return "Incorrect message number %s" % params[1]
             db.motd_del(params[1])
 
-        elif params[0] == "clean":
+        elif params[0] in ("clean", "clear"):
             if len(params) > 1:
                 return "'~motd clean' does not take parameters"
             db.motd_clean()

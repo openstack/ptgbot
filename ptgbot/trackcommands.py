@@ -67,7 +67,7 @@ def process_track_command(db, botsend, track, params):
         notify(db, botsend, track, adverb, sentence)
         return not_scheduled_today(db, track)
 
-    elif adverb == 'clean':
+    elif adverb in ('clean', 'clear'):
         if len(params) > 1:
             return "'#TRACK clean' does not take any parameter"
         db.clean_tracks([track])

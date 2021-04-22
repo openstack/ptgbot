@@ -77,7 +77,9 @@ def process_admin_command(db, command, params):
     elif command == 'list':
         return 'Available tracks: ' + str.join(' ', db.list_tracks())
 
-    elif command in ('clean', 'add', 'del'):
+    elif command in ('clean', 'clear', 'add', 'del'):
+        if command == 'clear':
+            command = 'clean'
         if len(params) < 1:
             return "This command takes one or more arguments"
         getattr(db, command + '_tracks')(params)

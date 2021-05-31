@@ -253,7 +253,7 @@ Edit config.json contents, for example::
 
   {
   "irc_nick": "ptgbot",
-  "irc_server": "irc.freenode.net",
+  "irc_server": "irc.oftc.net",
   "irc_port": 6697,
   "irc_channel": "#testptg",
   "db_filename": "html/ptg.json",

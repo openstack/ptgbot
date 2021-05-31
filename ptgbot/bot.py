@@ -16,7 +16,6 @@
 import argparse
 import collections
 import daemon
-from ib3.auth import SASL
 from ib3.connection import SSL
 import irc.bot
 import json
@@ -44,7 +43,7 @@ except ImportError:
 irc.client.ServerConnection.buffer_class.errors = 'replace'
 # If a long message is split, how long to sleep between sending parts
 # of a message.  This is lower than the general recommended interval,
-# but in practice freenode allows short bursts at a higher rate.
+# but in practice IRC networks allows short bursts at a higher rate.
 MESSAGE_CONTINUATION_SLEEP = 0.5
 # The amount of time to sleep between messages.
 ANTI_FLOOD_SLEEP = 2
@@ -62,33 +61,25 @@ def make_safe(func):
     return inner
 
 
-class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
+class PTGBot(SSL, irc.bot.SingleServerIRCBot):
     log = logging.getLogger("ptgbot.bot")
 
     def __init__(self, nickname, password, server, port, channel, db):
         super(PTGBot, self).__init__(
             server_list=[(server, port)],
             nickname=nickname,
-            realname=nickname,
-            ident_password=password,
-            channels=[channel])
+            realname=nickname)
         self.nickname = nickname
         self.password = password
         self.channel = channel
-        self.identify_msg_cap = False
         self.data = db
 
     def on_welcome(self, c, e):
-        self.identify_msg_cap = False
-        self.log.debug("Requesting identify-msg capability")
-        c.cap('REQ', 'identify-msg')
-        c.cap('END')
-
-    def on_cap(self, c, e):
-        self.log.debug("Received cap response %s" % repr(e.arguments))
-        if e.arguments[0] == 'ACK' and 'identify-msg' in e.arguments[1]:
-            self.log.debug("identify-msg cap acked")
-            self.identify_msg_cap = True
+        time.sleep(5)
+        if self.password:
+            self.send("NickServ", "IDENTIFY " + self.password)
+            time.sleep(2)
+        self.connection.join(self.channel)
 
     def usage(self, channel):
         self.send(channel, "I accept commands in the following format: "
@@ -104,12 +95,8 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
 
     @make_safe
     def on_privmsg(self, c, e):
-        if not self.identify_msg_cap:
-            self.log.debug("Ignoring message because identify-msg "
-                           "cap not enabled")
-            return
         nick = e.source.split('!')[0]
-        args = e.arguments[0][1:]
+        args = e.arguments[0]
         words = args.split()
         if len(words) < 1:
             self.log.debug("Ignoring privmsg with no content")
@@ -148,7 +135,6 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
             return process_user_command(self.data, nick, cmd[1:], words[1:])
 
         if cmd.startswith('#'):
-
             if cmd in ['#in', '#out', '#seen', '#subscribe', '#unsubscribe']:
                 return process_user_command(self.data, nick,
                                             cmd[1:], words[1:])
@@ -168,12 +154,8 @@ class PTGBot(SASL, SSL, irc.bot.SingleServerIRCBot):
 
     @make_safe
     def on_pubmsg(self, c, e):
-        if not self.identify_msg_cap:
-            self.log.debug("Ignoring message because identify-msg "
-                           "cap not enabled")
-            return
         nick = e.source.split('!')[0]
-        args = e.arguments[0][1:]
+        args = e.arguments[0]
         chan = e.target
 
         msg = self.handle_public_command(chan, nick, args)

@@ -1,9 +1,62 @@
+- secret:
+    name: ptgbot-opendev-dockerhub
+    data:
+      username: opendevzuul
+      password: !encrypted/pkcs1-oaep
+        - tpQrxd7cqPwjjKsSbDOH0GqNuFZudJDQvY43qFV8tmKh3zRTjfA5uVX5b3J60SHHYIez9
+          9W/SU0pVm0VfH0iL9plMKoVij6LLpFlxGePiab7SimjQuiDoP2aBles7AbmdCxyNrs6M5
+          WCHSsg+6bE79z0r2+2+yoFYxGlbY7beRpHXkPxGpFn/g9YpOFnAch3UcnAEDnZHamxufp
+          8wIZ//UYP4Z6hwv0PcX9caw/MU8bnUGDQXBtjErohtsi8+cELKXvHBT4WU33wpf//C6MD
+          KQ3nd7NJfDtIYaN4PGOw2mlbQFq0lF4PfxlhOHjC2+k9vz+EoW85Hkfcw986CE+JINq3p
+          k5t8GbXTDu86kkBzU6Gk+D7EVOluKZbGuTB4pcyZdjlMbty274y8xQXnplTp2rKIAdPeP
+          G1AcXEvZmfR0YEKg8UuR+ZJQx3Au1uEJAEpkNwH1Tbt54K/qyw1gAQDcHHkJ3odsKJe5V
+          c97Kn7roGCzwi7UWOd+XR0hvcNTUfotyBFQJzDe1+NHc6IQGQ1DeBVz5FD1JIVoj+W65E
+          XymsiQmZ+B+AxFnINS8PUTkJtlQc7zoMP/dtcYTbxtJB3XJQTOiaD00KGmr6RDWu3Uuw+
+          T6l/0vVdT7SeDY0v5wib2Elgl1Vnmxkte9oiUD9F++dW/rw42Cjlq5WqRlodaU=
+
+- job:
+    name: ptgbot-build-opendev-image
+    parent: opendev-build-docker-image
+    description: Build OpenDev Docker images for statusbot
+    provides: ptgbot-container-image
+    vars: &ptgbot_opendev_image_vars
+      zuul_work_dir: src/opendev.org/openstack/ptgbot
+      docker_images:
+        - context: .
+          repository: opendevorg/ptgbot
+          target: ptgbot
+
+- job:
+    name: ptgbot-upload-opendev-image
+    parent: opendev-upload-docker-image
+    description: Build OpenDev statusbot Docker images and upload to Docker Hub.
+    provides: ptgbot-container-image
+    vars: *ptgbot_opendev_image_vars
+    secrets:
+      - name: docker_credentials
+        secret: ptgbot-opendev-dockerhub
+        pass-to-parent: true
+
+- job:
+    name: ptgbot-promote-opendev-image
+    parent: opendev-promote-docker-image
+    description: Promote previously uploaded ptgbot Docker images.
+    vars: *ptgbot_opendev_image_vars
+    secrets:
+      - name: docker_credentials
+        secret: ptgbot-opendev-dockerhub
+        pass-to-parent: true
 - project:
     check:
       jobs:
         - tox-pep8
         - tox-py38
+        - ptgbot-build-opendev-image
     gate:
       jobs:
         - tox-pep8
         - tox-py38
+        - ptgbot-upload-opendev-image
+    promote:
+      jobs:
+        - ptgbot-promote-opendev-image

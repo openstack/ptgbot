@@ -42,7 +42,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+hey ptgbot wazzzup'])
+                    ['hey ptgbot wazzzup'])
 
         with mock.patch.object(
             self.bot, 'send',
@@ -54,7 +54,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#help'])
+                    ['#help'])
 
         with mock.patch.object(
             self.bot, 'send',
@@ -69,7 +69,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#svift now Looking at me'])
+                    ['#svift now Looking at me'])
 
         with mock.patch.object(
             self.bot, 'send',
@@ -84,7 +84,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#swift now Looking at me'])
+                    ['#swift now Looking at me'])
 
         self.bot.on_pubmsg('', msg)
         self.assertEquals(
@@ -96,7 +96,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#swift next Looking at you'])
+                    ['#swift next Looking at you'])
 
         self.bot.on_pubmsg('', msg)
         self.assertEquals(
@@ -106,7 +106,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#swift next Looking at us'])
+                    ['#swift next Looking at us'])
 
         self.bot.on_pubmsg('', msg)
         self.assertEquals(
@@ -118,13 +118,13 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#swift next Looking at you'])
+                    ['#swift next Looking at you'])
 
         self.bot.on_pubmsg('', msg)
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#swift now Looking at me'])
+                    ['#swift now Looking at me'])
 
         self.bot.on_pubmsg('', msg)
         self.assertFalse('swift' in self.db.data['next'])
@@ -133,7 +133,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#swift etherpad https://etherpad.opendev.org/swift'])
+                    ['#swift etherpad https://etherpad.opendev.org/swift'])
 
         self.bot.on_pubmsg('', msg)
         self.assertEquals(
@@ -143,7 +143,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#swift etherpad auto'])
+                    ['#swift etherpad auto'])
 
         self.bot.on_pubmsg('', msg)
         self.assertFalse('swift' in self.db.data['etherpads'])
@@ -152,7 +152,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#swift url https://meetpad.opendev.org/swift'])
+                    ['#swift url https://meetpad.opendev.org/swift'])
 
         self.bot.on_pubmsg('', msg)
         self.assertEquals(
@@ -162,7 +162,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#swift url none'])
+                    ['#swift url none'])
 
         self.bot.on_pubmsg('', msg)
         self.assertFalse('swift' in self.db.data['urls'])
@@ -171,7 +171,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#swift color #ffffff'])
+                    ['#swift color #ffffff'])
 
         self.bot.on_pubmsg('', msg)
         self.assertEquals(
@@ -183,7 +183,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#swift location On the beach'])
+                    ['#swift location On the beach'])
 
         self.bot.on_pubmsg('', msg)
         self.assertEquals(
@@ -195,7 +195,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#swift book Aspen-FriP1'])
+                    ['#swift book Aspen-FriP1'])
 
         with mock.patch.object(
             self.bot, 'send',
@@ -214,7 +214,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+#swift unbook Vail-TueP2'])
+                    ['#swift unbook Vail-TueP2'])
 
         with mock.patch.object(
             self.bot, 'send',
@@ -240,7 +240,7 @@ class TestProcessMessage(testtools.TestCase):
                 msg = Event('',
                             'johndoe!~johndoe@openstack/member/johndoe',
                             '#channel',
-                            ['+#swift book ' + slot])
+                            ['#swift book ' + slot])
                 self.bot.on_pubmsg('', msg)
                 mock_send.assert_called_with(
                     '#channel',
@@ -258,7 +258,7 @@ class TestProcessMessage(testtools.TestCase):
                 msg = Event('',
                             'johndoe!~johndoe@openstack/member/johndoe',
                             '#channel',
-                            ['+#swift unbook ' + slot])
+                            ['#swift unbook ' + slot])
                 self.bot.on_pubmsg('', msg)
                 mock_send.assert_called_with(
                     '#channel',
@@ -285,7 +285,7 @@ class TestProcessMessage(testtools.TestCase):
                 msg = Event('',
                             'johndoe!~johndoe@openstack/member/johndoe',
                             '',
-                            ['+' + cmd])
+                            [cmd])
                 self.bot.on_privmsg('', msg)
                 mock_send.assert_called_with(
                     'johndoe',
@@ -300,7 +300,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'johndoe!~johndoe@openstack/member/johndoe',
                         '#channel',
-                        ['+' + command])
+                        [command])
             with mock.patch.object(
                 self.bot, 'send',
             ) as mock_send:
@@ -318,7 +318,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'janedoe!~janedoe@openstack/member/janedoe',
                         '',
-                        ['+seen johndoe'])
+                        ['seen johndoe'])
             self.bot.on_privmsg('', msg)
             mock_send.assert_called_with(
                 'janedoe',
@@ -328,7 +328,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'johndoe!~johndoe@openstack/member/johndoe',
                         '',
-                        ['+in swift'])
+                        ['in swift'])
             self.bot.on_privmsg('', msg)
             mock_send.assert_called_with(
                 'johndoe',
@@ -342,7 +342,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'janedoe!~janedoe@openstack/member/janedoe',
                         '',
-                        ['+seen johndoe'])
+                        ['seen johndoe'])
             self.bot.on_privmsg('', msg)
             mock_send.assert_called_with(
                 'janedoe',
@@ -353,7 +353,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'johndoe!~johndoe@openstack/member/johndoe',
                         '',
-                        ['+out'])
+                        ['out'])
             self.bot.on_privmsg('', msg)
             mock_send.assert_called_with(
                 'johndoe',
@@ -363,7 +363,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'janedoe!~janedoe@openstack/member/janedoe',
                         '',
-                        ['+seen johndoe'])
+                        ['seen johndoe'])
             self.bot.on_privmsg('', msg)
             mock_send.assert_called_with(
                 'janedoe',
@@ -378,7 +378,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'johndoe!~johndoe@openstack/member/johndoe',
                         '',
-                        ['+unsubscribe'])
+                        ['unsubscribe'])
             self.bot.on_privmsg('', msg)
             mock_send.assert_called_with(
                 'johndoe',
@@ -388,7 +388,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'johndoe!~johndoe@openstack/member/johndoe',
                         '',
-                        ['+subscribe'])
+                        ['subscribe'])
             self.bot.on_privmsg('', msg)
             mock_send.assert_called_with(
                 'johndoe',
@@ -398,7 +398,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'johndoe!~johndoe@openstack/member/johndoe',
                         '',
-                        ['+subscribe swift'])
+                        ['subscribe swift'])
             self.bot.on_privmsg('', msg)
             mock_send.assert_called_with(
                 'johndoe',
@@ -412,7 +412,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'johndoe!~johndoe@openstack/member/johndoe',
                         '',
-                        ['+subscribe'])
+                        ['subscribe'])
             self.bot.on_privmsg('', msg)
             mock_send.assert_called_with(
                 'johndoe',
@@ -422,7 +422,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'janedoe!~janedoe@openstack/member/janedoe',
                         '#channel',
-                        ['+#nova now discussing with swift'])
+                        ['#nova now discussing with swift'])
             self.bot.on_pubmsg('', msg)
             mock_send.assert_called_with(
                 'johndoe',
@@ -432,7 +432,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'johndoe!~johndoe@openstack/member/johndoe',
                         '',
-                        ['+subscribe neutron'])
+                        ['subscribe neutron'])
             self.bot.on_privmsg('', msg)
             mock_send.assert_called_with(
                 'johndoe',
@@ -446,14 +446,14 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'janedoe!~janedoe@openstack/member/janedoe',
                         '#channel',
-                        ['+#nova now continuing discussion with swift'])
+                        ['#nova now continuing discussion with swift'])
             self.bot.on_pubmsg('', msg)
             self.assertFalse(mock_send.called)
             mock_send.reset_mock()
             msg = Event('',
                         'johndoe!~johndoe@openstack/member/johndoe',
                         '',
-                        ['+unsubscribe'])
+                        ['unsubscribe'])
             self.bot.on_privmsg('', msg)
             mock_send.assert_called_with(
                 'johndoe',
@@ -463,7 +463,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'janedoe!~janedoe@openstack/member/janedoe',
                         '#channel',
-                        ['+#neutron now doing swift things'])
+                        ['#neutron now doing swift things'])
             self.bot.on_pubmsg('', msg)
             self.assertFalse(mock_send.called)
 
@@ -471,7 +471,7 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+~list'])
+                    ['~list'])
         with mock.patch.object(
             self.bot, 'send',
         ) as mock_send:
@@ -506,7 +506,7 @@ class TestProcessMessage(testtools.TestCase):
                 msg = Event('',
                             'johndoe!~johndoe@openstack/member/johndoe',
                             '#channel',
-                            ['+' + cmd])
+                            [cmd])
                 self.bot.on_pubmsg('', msg)
                 mock_send.assert_called_with(
                     '#channel',
@@ -523,7 +523,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'johndoe!~johndoe@openstack/member/johndoe',
                         '#channel',
-                        ['+~add testtrack'])
+                        ['~add testtrack'])
             self.bot.on_pubmsg('', msg)
             self.assertTrue('testtrack' in self.db.data['tracks'])
             mock_send.reset_mock()
@@ -557,7 +557,7 @@ class TestProcessMessage(testtools.TestCase):
             msg = Event('',
                         'johndoe!~johndoe@openstack/member/johndoe',
                         '#channel',
-                        ['+' + cmd])
+                        [cmd])
             self.bot.on_pubmsg('', msg)
             self.assertEqual(self.db.data['motd'], motd)
 
@@ -567,12 +567,12 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+~requirevoice'])
+                    ['~requirevoice'])
         self.bot.on_pubmsg('', msg)
         msg = Event('',
                     'janedoe!~janedoe@openstack/member/janedoe',
                     '#channel',
-                    ['+#swift now Looking at me'])
+                    ['#swift now Looking at me'])
         with mock.patch.object(
             self.bot, 'send',
         ) as mock_send:
@@ -584,12 +584,12 @@ class TestProcessMessage(testtools.TestCase):
         msg = Event('',
                     'johndoe!~johndoe@openstack/member/johndoe',
                     '#channel',
-                    ['+~alloweveryone'])
+                    ['~alloweveryone'])
         self.bot.on_pubmsg('', msg)
         msg = Event('',
                     'janedoe!~janedoe@openstack/member/janedoe',
                     '#channel',
-                    ['+#swift now Looking at me'])
+                    ['#swift now Looking at me'])
         self.bot.on_pubmsg('', msg)
         self.assertEquals(
             self.db.data['now']['swift'],

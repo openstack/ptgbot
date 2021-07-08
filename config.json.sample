@@ -1,7 +1,7 @@
 {
   "irc_nick": "NICK",
   "irc_pass": "",
-  "irc_server": "irc.freenode.net",
+  "irc_server": "irc.oftc.net",
   "irc_port": 6697,
   "irc_channel": "#CHANNEL",
   "db_filename": "html/ptg.json"

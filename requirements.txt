@@ -1,5 +1,5 @@
 # Pin irc module to 15.1.1 until ib3 releases https://github.com/bd808/python-ib3/commit/92da70155e5378478802cb38baaa2a00187201d6
 irc==15.1.1
-python-daemon
+python-daemon >= 1.6
 ib3
 requests

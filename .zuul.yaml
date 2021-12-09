@@ -18,6 +18,9 @@
     name: ptgbot-build-opendev-image
     parent: opendev-build-docker-image
     description: Build OpenDev Docker images for statusbot
+    requires:
+      - python-builder-3.9-bullseye-container-image
+      - python-base-3.9-bullseye-container-image
     provides: ptgbot-container-image
     vars: &ptgbot_opendev_image_vars
       zuul_work_dir: src/opendev.org/openstack/ptgbot
@@ -30,6 +33,9 @@
     name: ptgbot-upload-opendev-image
     parent: opendev-upload-docker-image
     description: Build OpenDev statusbot Docker images and upload to Docker Hub.
+    requires:
+      - python-builder-3.9-bullseye-container-image
+      - python-base-3.9-bullseye-container-image
     provides: ptgbot-container-image
     vars: *ptgbot_opendev_image_vars
     secrets:

@@ -158,6 +158,7 @@
         "Aspen": {
             "cap_icon": "facetime-video",
             "cap_desc": "Videoprojection available",
+	    "desc": "Fits a team of 10",
             "FriA1": "",
             "FriA2": "",
             "FriP1": "",
@@ -181,6 +182,7 @@
         },
         "Ballroom A": {
             "url": "http://meet.jit.si/DEN-ptg-BallroomA",
+	    "desc": "10 person table",
             "FriA1": "nova",
             "FriA2": "nova",
             "FriP1": "nova",

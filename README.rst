@@ -20,13 +20,14 @@ easily by other people.
 User commands
 =============
 
-Anyone can privately message the bot with the following commands:
+Anyone can privately message the bot with the following commands
+(chevrons like <> denote required parameters):
 
-* ``in #TRACKNAME`` - tells the bot you are currently in the track
+* ``in <#TRACKNAME>`` - tells the bot you are currently in the track
   named ``TRACKNAME``.  This must be one of the tracks it knows about,
   for example: ``in #nova``
 
-* ``in LOCATION`` - tells the bot you are currently in a location
+* ``in <LOCATION>`` - tells the bot you are currently in a location
   which doesn't correspond to any track.  This can be any freeform
   text, for example: ``in the pub``
 
@@ -34,10 +35,10 @@ Anyone can privately message the bot with the following commands:
   However others will still be able to see when and where you checked
   out.
 
-* ``seen NICK`` - asks the bot where the user with the given IRC nick
+* ``seen <NICK>`` - asks the bot where the user with the given IRC nick
   was last seen (if anywhere).  The nick is case-insensitive.
 
-* ``subscribe REGEXP`` - subscribes for a direct message notification
+* ``subscribe <REGEXP>`` - subscribes for a direct message notification
   from the bot whenever a topic with a substring matching ``REGEXP``
   is set via the ``now`` or ``next`` commands (see below).  The exact
   string the (case-insensitive) regular expression will be matched
@@ -67,7 +68,7 @@ to people who have voice in the channel (+v).
 
 Commands follow the following format::
 
-  #TRACKNAME COMMAND [PARAMETERS]
+  #TRACKNAME <COMMAND> [PARAMETERS]
 
 Here is the list of available commands.
 
@@ -196,32 +197,33 @@ the virtual meeting location. Example usage::
 Admin commands
 ==============
 
-You have to be a channel operator (+o) to use admin commands.
+You have to be a channel operator (+o) to use admin commands (chevrons
+like <> denote required parameters).
 
 ~list
   List available track names
 
-~add TRACK [TRACK..]
+~add <TRACK> [TRACK..]
   Add new track(s)
 
-~del TRACK [TRACK..]
+~del <TRACK> [TRACK..]
   Deletes track(s)
 
-~clean TRACK [TRACK..]
+~clean <TRACK> [TRACK..]
   Removes active entries for specified track(s)
 
 ~newday
   Removes existing now/next/location/presence entries. This command is
   meant to be run at the start of a new day
 
-~motd add LEVEL MESSAGE
+~motd add <LEVEL> <MESSAGE>
   Adds a message of the day on top of the rendered page. Level must be one of
   info, success, warning or danger. Multiple messages can be provided.
 
-~motd del N
+~motd del <N>
   Removes Nth message from the top of the page (first message is number 1).
 
-~motd reorder X Y...
+~motd reorder <X> <Y> [Z...]
   Reorder messages. For example, ~motd reorder 2 1 would swap the top two
   messages, and remove any other message present.
 
@@ -231,7 +233,7 @@ You have to be a channel operator (+o) to use admin commands.
 ~emptydb
   Resets the database entirely to minimal contents
 
-~fetchdb URL
+~fetchdb <URL>
   Fetches JSON DB from specified URL. Any JSON key specified will replace
   existing data in database.
 

@@ -279,6 +279,6 @@ Then you can give other commands to the bot, like::
 
 In another terminal, start the webserver::
 
-  cd html && python -m SimpleHTTPServer
+  cd ptgbot/html && python -m http.server
 
 Open the web page in a web browser: http://127.0.0.1:8000/ptg.html

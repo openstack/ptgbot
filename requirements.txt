@@ -3,3 +3,4 @@ irc==15.1.1
 python-daemon >= 1.6
 ib3
 requests
+icalendar >= 5.0.0

@@ -8,6 +8,9 @@ import os
 import pkg_resources
 import socketserver
 
+import ptgbot.ics
+
+
 CONFIG = {}
 
 
@@ -19,6 +22,14 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_header('Content-type', 'application/json')
                 self.end_headers()
                 self.wfile.write(fp.read())
+        elif self.path.endswith('.ics'):
+            team = os.path.basename(self.path)[:-4]
+            with open(CONFIG['db_filename'], 'rb') as fp:
+                ics = ptgbot.ics.json2ical(json.load(fp), team)
+            self.send_response(200)
+            self.send_header('Content-type', 'text/calendar')
+            self.end_headers()
+            self.wfile.write(ics)
         else:
             http.server.SimpleHTTPRequestHandler.do_GET(self)
 

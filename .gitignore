@@ -1,4 +1,5 @@
 .tox
+.stestr
 build/*
 *.pyc
 *.egg*

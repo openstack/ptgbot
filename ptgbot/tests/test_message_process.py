@@ -603,13 +603,13 @@ class TestProcessMessage(testtools.TestCase):
             self.bot.on_pubmsg()
             mock_send.assert_called_with(
                 '#channel',
-                "Bot airbag activated: on_pubmsg() "
+                "Bot airbag activated: PTGBot.on_pubmsg() "
                 "missing 2 required positional arguments: 'c' and 'e'"
             )
             mock_send.reset_mock()
             self.bot.on_privmsg()
             mock_send.assert_called_with(
                 '#channel',
-                "Bot airbag activated: on_privmsg() "
+                "Bot airbag activated: PTGBot.on_privmsg() "
                 "missing 2 required positional arguments: 'c' and 'e'"
             )

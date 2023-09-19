@@ -1,10 +1,10 @@
 
-FROM docker.io/opendevorg/python-builder:3.9-bullseye as builder
+FROM docker.io/opendevorg/python-builder:3.11-bookworm as builder
 
 COPY . /tmp/src
 RUN assemble
 
-FROM docker.io/opendevorg/python-base:3.9-bullseye as ptgbot
+FROM docker.io/opendevorg/python-base:3.11-bookworm as ptgbot
 
 COPY --from=builder /output/ /output
 RUN /output/install-from-bindep

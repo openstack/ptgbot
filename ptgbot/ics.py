@@ -4,7 +4,9 @@ import icalendar
 
 
 def json2ical(db, include_teams="ALL"):
-    teams = slots = {}
+    teams = {}
+    slots = {}
+    eventid = db["eventid"]
 
     # FIXME: The unused label and the _slots here are irritating.
     for label, _slots in db["slots"].items():
@@ -30,10 +32,12 @@ def json2ical(db, include_teams="ALL"):
     c.add("version", "2.0")
 
     for team in include_teams:
+        default_etherpad = f"https://etherpad.opendev.org/p/{eventid}-{team}"
         for booking in teams.get(team, []):
             location, slot = booking
-            url = db["schedule"].get(location, {}).get("url", "")
-            etherpad = db["etherpads"].get(team, "")
+            url = (db["urls"].get(team) or
+                   db["schedule"].get(location, {}).get("url", ""))
+            etherpad = db["etherpads"].get(team, default_etherpad)
             time = slots.get(slot, {}).get("realtime")
             # TODO(tonyb): 60 mins is a default picked to make the existing
             # DB work unchanged.  We can leave this as is or pick another
@@ -52,14 +56,10 @@ def json2ical(db, include_teams="ALL"):
             e.add("summary", summary)
             e.add("description", desc)
             e.add("dtstart", dtstart)
-            e.add("dtend", dtstart + datetime.timedelta(mins=duration))
+            e.add("dtend", dtstart + datetime.timedelta(minutes=duration))
             e.add("priority", 0)
-
-            # FIXME: Why the change in format
-            # FIXME: Check for empty url?  it shouldn't happen due to the
-            # way we build the the teams/bookings lists
-            e["location"] = icalendar.vText(url)
-            e["uid"] = uid
+            e.add("uid", uid)
+            e.add("location", icalendar.vText(url))
 
             c.add_component(e)
 

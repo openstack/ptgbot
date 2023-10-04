@@ -41,7 +41,18 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
 def start():
     os.chdir(CONFIG['source_dir'])
-    with socketserver.TCPServer(("", CONFIG['port']), RequestHandler) as httpd:
+    # In a fast restart of the service we don't have time for all the TCP
+    # sessions to drain the sockets in TIME_WAIT.  So the service fails to
+    # restart with a "bind address in use".   To avoid this we want to add
+    # SO_REUSEADDR and SO_REUSEPORT.  To do so we have to disable
+    # bind_and_activate so we can then set allow_reuse_address and
+    # allow_reuse_address on the TCPServer before we bind.
+    with socketserver.TCPServer(("", CONFIG['port']), RequestHandler,
+                                bind_and_activate=False) as httpd:
+        httpd.allow_reuse_address = True
+        httpd.allow_reuse_port = True
+        httpd.server_bind()
+        httpd.server_activate()
         httpd.serve_forever()
 
 

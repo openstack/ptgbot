@@ -94,7 +94,7 @@ class PTGDataBase():
     def add_etherpad(self, track, etherpad):
         if etherpad == 'auto':
             if track in self.data['etherpads']:
-                del(self.data['etherpads'][track])
+                del self.data['etherpads'][track]
         else:
             self.data['etherpads'][track] = etherpad
         self.save()
@@ -102,7 +102,7 @@ class PTGDataBase():
     def add_url(self, track, url):
         if url == 'none':
             if track in self.data['urls']:
-                del(self.data['urls'][track])
+                del self.data['urls'][track]
         else:
             self.data['urls'][track] = url
         self.save()
@@ -239,7 +239,7 @@ class PTGDataBase():
         self.save()
 
     def motd_del(self, num):
-        del(self.data['motd'][int(num) - 1])
+        del self.data['motd'][int(num) - 1]
         self.save()
 
     def motd_clean(self):

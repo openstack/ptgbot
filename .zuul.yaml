@@ -4,16 +4,16 @@
       quay.io:
         username: opendevorg+ptgbotrobot
         password: !encrypted/pkcs1-oaep
-          - wLxGIpS7huEhC7KIT++Zl7i+fNIVhJnm9YRjTabCMhoPRzKnnpiLETdiAb+63n7xXaqoA
-            YRUt1zsVS3EHIEAK6chmH2hSq9sHxweCIAgq6H1gVwN+DOYYyv2BfHzUIQcFs3zpsdNLe
-            vXC4q6GcIwAwe9qSOJ875CDsChvlbyhpwEi5C+o+w6XOO/uZMNRCL4B+vssM6IXL+inmb
-            k4n1okvLvLqniQFrWvB1c1AGMJ/9lOKLdHfducd1FqKEist1K6QaA1TR1y19P9fubN78W
-            9D707NhvcicrCZjwrx1r0Gidi40E9cyNHot3yCeWCQeJ5+6Qku3AXsxTascyaF76LVQMy
-            FKkHv2pL2PabtQzdj96doaGJ8upwORYGLsEILMXCjRoH9HgRx3NNIfZEvQFcvDFz92gnm
-            66BCiE1EWfz2Q9nYcfKruGoSKTgLcHL3beoGsSeGJtImMDC3IR+uDjom8fekm8XBu4Pr6
-            bQ8VtV30IkSwJXFc7Rtz/3f6qaj0e9wgfkdZbulxhFxBJHoeoYaJHxZGRKiELpTNnqM3Y
-            1Pkn18xNmfrZjGxR+88WI5XO+E+RJpn76cVitRFA6XIq6tjWSxWtMdUFtptN69HcR7rQ0
-            gkYNk7+UIP78gWzbK0/uv2rXwnGw35yVotBZdpyMaiUv5eq+3iwKCW1+oDGjbw=
+          - tbHiQcOiIzZhSNAPhWQ/SKWMbwPyj+MRa0fNV3XKtRcIyVKsRDnnkdpw1VDZ1JHivZa96
+            vWUKfhxejPGdkiaWkOn2wOALTdtBEl7hgFl2tC5rOmvRxOnACX+PvXkqiORyqzdI4sgDB
+            equs+eXSIv15MNf4ylRhdxTZKt7BrKLtPVpNblgX+fijktVSz14XY9064mO8O2v5Uz1S2
+            4IrVsQ/ft2pPNlkI+H0zSpRxkXE1OOjggwYIivDoSWgxWG4Ix8scsnyWZDsG18hyishHU
+            oC+Com6/lgu1ad6TA9p92ayYDjBrgZcBXBEE3d/+IEhYeTNHTCyQ4+svF90T/BjkFJ/mZ
+            jwCD27yrFRNbUB5MkgOPfbhhJMb+dBoOr2YoUvFRCXT5XN74dL/9K6YeP3CmwNJL8yj/G
+            hCLcdPAPYR31to30BdxJSCKUh4yivJW7XMzhgpI1+q0NNvSkBiY1kfZDyAxM7xXR6WlqI
+            ugAMUcDGgHVFMYGJC4C2JvU9OmrFvj+Svzkv8O1je85KebovUC+fF4M0p9aEyQJKoaSWV
+            6OfnehTpVEf0ftCT9JgKzdCVuWa8DueMgJG2ztVuiKsChFnkZzDMoTqM/eiz2AOnP43+f
+            jmbzds7hyxJzF/5ryawz12pEBaqUt16WgpC6aexkCiInNQ1K60OYnd85Vo2LgE=
         # No api token as we won't need to create new repos for ptgbot
 
 - job:

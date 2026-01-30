@@ -1,5 +1,4 @@
 irc
 python-daemon >= 1.6
-ib3
 requests
 icalendar >= 5.0.0

@@ -21,8 +21,8 @@
     parent: opendev-build-container-image
     description: Build OpenDev Docker images for statusbot
     requires:
-      - python-builder-3.11-bookworm-container-image
-      - python-base-3.11-bookworm-container-image
+      - python-builder-3.12-trixie-container-image
+      - python-base-3.12-trixie-container-image
     provides: ptgbot-container-image
     vars: &ptgbot_opendev_image_vars
       zuul_work_dir: src/opendev.org/openstack/ptgbot
@@ -43,8 +43,8 @@
     parent: opendev-upload-container-image
     description: Build OpenDev statusbot Docker images and upload to Docker Hub.
     requires:
-      - python-builder-3.11-bookworm-container-image
-      - python-base-3.11-bookworm-container-image
+      - python-builder-3.12-trixie-container-image
+      - python-base-3.12-trixie-container-image
     provides: ptgbot-container-image
     vars: *ptgbot_opendev_image_vars
     secrets:
@@ -65,14 +65,14 @@
     check:
       jobs:
         - tox-pep8
-        - tox-py311:
-            nodeset: ubuntu-jammy
+        - tox-py312:
+            nodeset: ubuntu-noble
         - ptgbot-build-opendev-image
     gate:
       jobs:
         - tox-pep8
-        - tox-py311:
-            nodeset: ubuntu-jammy
+        - tox-py312:
+            nodeset: ubuntu-noble
         - ptgbot-upload-opendev-image
     promote:
       jobs:

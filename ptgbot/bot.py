@@ -16,11 +16,12 @@
 import argparse
 import collections
 import daemon
-from ib3.connection import SSL
+import functools
 import irc.bot
 import json
 import logging.config
 import os
+import ssl
 import time
 import textwrap
 
@@ -61,14 +62,25 @@ def make_safe(func):
     return inner
 
 
-class PTGBot(SSL, irc.bot.SingleServerIRCBot):
+class PTGBot(irc.bot.SingleServerIRCBot):
     log = logging.getLogger("ptgbot.bot")
 
     def __init__(self, nickname, password, server, port, channel, db):
+        connect_params = {}
+        if port == 6697:
+            # Taken from the example in the Factory class docstring at
+            # https://github.com/jaraco/irc/blob/main/irc/connection.py
+            context = ssl.create_default_context()
+            wrapper = functools.partial(
+                context.wrap_socket, server_hostname=server)
+            factory = irc.connection.Factory(wrapper=wrapper)
+            connect_params['connect_factory'] = factory
+
         super(PTGBot, self).__init__(
             server_list=[(server, port)],
             nickname=nickname,
-            realname=nickname)
+            realname=nickname,
+            **connect_params)
         self.nickname = nickname
         self.password = password
         self.channel = channel

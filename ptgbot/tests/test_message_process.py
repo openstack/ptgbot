@@ -87,7 +87,7 @@ class TestProcessMessage(testtools.TestCase):
                     ['#swift now Looking at me'])
 
         self.bot.on_pubmsg('', msg)
-        self.assertEquals(
+        self.assertEqual(
             self.db.data['now']['swift'],
             "Looking at me"
         )
@@ -99,7 +99,7 @@ class TestProcessMessage(testtools.TestCase):
                     ['#swift next Looking at you'])
 
         self.bot.on_pubmsg('', msg)
-        self.assertEquals(
+        self.assertEqual(
             self.db.data['next']['swift'],
             ["Looking at you"]
         )
@@ -109,7 +109,7 @@ class TestProcessMessage(testtools.TestCase):
                     ['#swift next Looking at us'])
 
         self.bot.on_pubmsg('', msg)
-        self.assertEquals(
+        self.assertEqual(
             self.db.data['next']['swift'],
             ["Looking at you", "Looking at us"]
         )
@@ -136,7 +136,7 @@ class TestProcessMessage(testtools.TestCase):
                     ['#swift etherpad https://etherpad.opendev.org/swift'])
 
         self.bot.on_pubmsg('', msg)
-        self.assertEquals(
+        self.assertEqual(
             self.db.data['etherpads']['swift'],
             "https://etherpad.opendev.org/swift"
         )
@@ -155,7 +155,7 @@ class TestProcessMessage(testtools.TestCase):
                     ['#swift url https://meetpad.opendev.org/swift'])
 
         self.bot.on_pubmsg('', msg)
-        self.assertEquals(
+        self.assertEqual(
             self.db.data['urls']['swift'],
             "https://meetpad.opendev.org/swift"
         )
@@ -174,7 +174,7 @@ class TestProcessMessage(testtools.TestCase):
                     ['#swift color #ffffff'])
 
         self.bot.on_pubmsg('', msg)
-        self.assertEquals(
+        self.assertEqual(
             self.db.data['colors']['swift'],
             "#ffffff"
         )
@@ -186,7 +186,7 @@ class TestProcessMessage(testtools.TestCase):
                     ['#swift location On the beach'])
 
         self.bot.on_pubmsg('', msg)
-        self.assertEquals(
+        self.assertEqual(
             self.db.data['location']['swift'],
             "On the beach"
         )
@@ -205,7 +205,7 @@ class TestProcessMessage(testtools.TestCase):
                 '#channel',
                 "johndoe: Room Aspen is now booked on FriP1 for swift"
             )
-        self.assertEquals(
+        self.assertEqual(
             self.db.data['schedule']['Aspen']['FriP1'],
             "swift"
         )
@@ -225,7 +225,7 @@ class TestProcessMessage(testtools.TestCase):
                 "johndoe: Room Vail (previously booked for swift) is "
                 "now free on TueP2"
             )
-        self.assertEquals(
+        self.assertEqual(
             self.db.data['schedule']['Vail']['TueP2'],
             ""
         )
@@ -591,7 +591,7 @@ class TestProcessMessage(testtools.TestCase):
                     '#channel',
                     ['#swift now Looking at me'])
         self.bot.on_pubmsg('', msg)
-        self.assertEquals(
+        self.assertEqual(
             self.db.data['now']['swift'],
             "Looking at me"
         )

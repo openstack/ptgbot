@@ -2,10 +2,10 @@ import argparse
 import daemon
 import daemon.pidfile
 import http.server
+import importlib.resources
 import json
 import logging
 import os
-import pkg_resources
 import socketserver
 
 import ptgbot.ics
@@ -40,20 +40,21 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
 
 def start():
-    os.chdir(CONFIG['source_dir'])
-    # In a fast restart of the service we don't have time for all the TCP
-    # sessions to drain the sockets in TIME_WAIT.  So the service fails to
-    # restart with a "bind address in use".   To avoid this we want to add
-    # SO_REUSEADDR and SO_REUSEPORT.  To do so we have to disable
-    # bind_and_activate so we can then set allow_reuse_address and
-    # allow_reuse_address on the TCPServer before we bind.
-    with socketserver.TCPServer(("", CONFIG['port']), RequestHandler,
-                                bind_and_activate=False) as httpd:
-        httpd.allow_reuse_address = True
-        httpd.allow_reuse_port = True
-        httpd.server_bind()
-        httpd.server_activate()
-        httpd.serve_forever()
+    with importlib.resources.as_file(CONFIG['source_dir']) as html_dir:
+        os.chdir(html_dir)
+        # In a fast restart of the service we don't have time for all the TCP
+        # sessions to drain the sockets in TIME_WAIT.  So the service fails to
+        # restart with a "bind address in use".   To avoid this we want to add
+        # SO_REUSEADDR and SO_REUSEPORT.  To do so we have to disable
+        # bind_and_activate so we can then set allow_reuse_address and
+        # allow_reuse_address on the TCPServer before we bind.
+        with socketserver.TCPServer(("", CONFIG['port']), RequestHandler,
+                                    bind_and_activate=False) as httpd:
+            httpd.allow_reuse_address = True
+            httpd.allow_reuse_port = True
+            httpd.server_bind()
+            httpd.server_activate()
+            httpd.serve_forever()
 
 
 def main():
@@ -74,7 +75,7 @@ def main():
         file_config = json.load(fp)
         CONFIG['db_filename'] = file_config['db_filename']
 
-    CONFIG['source_dir'] = pkg_resources.resource_filename(__name__, "html")
+    CONFIG['source_dir'] = importlib.resources.files() / 'html'
 
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
     logging.info('Starting daemon on port: %s' % args.port)
